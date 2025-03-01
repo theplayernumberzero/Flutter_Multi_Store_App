@@ -7,9 +7,12 @@ class RegisterScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // E-posta ve şifre için controller'lar
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  //final TextEditingController _emailController = TextEditingController();
+  //final TextEditingController _passwordController = TextEditingController();
 
+  late String email;
+  late String fullName;
+  late String password;
   // Formu kontrol etmek için bir fonksiyon
   void _submitForm(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
@@ -67,6 +70,9 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value) {
+                      email = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'E-posta boş olamaz';
@@ -108,6 +114,9 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value) {
+                      fullName = value;
+                    },
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Enter your full name';
@@ -146,6 +155,9 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value) {
+                      password = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Password cannot be empty';

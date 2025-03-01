@@ -7,13 +7,18 @@ class LoginScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // E-posta ve şifre için controller'lar
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  //final TextEditingController _emailController = TextEditingController();
+  //final TextEditingController _passwordController = TextEditingController();
+
+  late String email;
+  late String password;
 
   // Formu kontrol etmek için bir fonksiyon
   void _submitForm(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
+      print(email);
+      print(password);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Form Geçerli')));
     } else {
@@ -67,6 +72,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value) {
+                      email = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'E-posta boş olamaz';
@@ -108,6 +116,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    onChanged: (value) {
+                      password = value;
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Password cannot be empty';
