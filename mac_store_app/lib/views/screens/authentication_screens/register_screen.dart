@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/auth_controller.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/login_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   //It is for access to current situation of form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // E-posta ve şifre için controller'lar
-  //final TextEditingController _emailController = TextEditingController();
-  //final TextEditingController _passwordController = TextEditingController();
+  //For register
+  final AuthController _authController = AuthController();
 
+  // E-posta ve şifre için controller'lar
   late String email;
+
   late String fullName;
+
   late String password;
+
   // Formu kontrol etmek için bir fonksiyon
-  void _submitForm(BuildContext context) {
+  void _submitForm(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Form Geçerli')));
+      BuildContext localContext = context;
+
+      String res =
+          await _authController.registerNewUser(email, fullName, password);
+      if (res == 'Success') {
+        Future.delayed(Duration.zero, () {
+          Navigator.push(localContext, MaterialPageRoute(builder: (context) {
+            return LoginScreen();
+          }));
+
+          ScaffoldMessenger.of(localContext)
+              .showSnackBar(SnackBar(content: Text('Account created')));
+        });
+      }
     } else {
       // Form geçerli değilse kullanıcıya hata mesajı göster
       ScaffoldMessenger.of(context)

@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/auth_controller.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   //It is for access to current situation of form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // E-posta ve şifre için controller'lar
-  //final TextEditingController _emailController = TextEditingController();
-  //final TextEditingController _passwordController = TextEditingController();
+  //For login
+  final AuthController _authController = AuthController();
 
+  // E-posta ve şifre için controller'lar
   late String email;
+
   late String password;
 
   // Formu kontrol etmek için bir fonksiyon
-  void _submitForm(BuildContext context) {
+  void _submitForm(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
+      String res = await _authController.loginUser(email, password);
+      if (res == 'Success') {
+        //go to main screen
+        print("Logged in");
+      } else {
+        print(res);
+      }
       print(email);
       print(password);
       ScaffoldMessenger.of(context)
