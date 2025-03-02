@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/controllers/auth_controller.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
+import 'package:mac_store_app/views/screens/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -24,9 +25,18 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submitForm(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
+      BuildContext localContext = context;
       String res = await _authController.loginUser(email, password);
       if (res == 'Success') {
         //go to main screen
+        Future.delayed(Duration.zero, () {
+          Navigator.push(localContext, MaterialPageRoute(builder: (context) {
+            return MainScreen();
+          }));
+
+          ScaffoldMessenger.of(localContext)
+              .showSnackBar(SnackBar(content: Text('Logged in')));
+        });
         print("Logged in");
       } else {
         print(res);
