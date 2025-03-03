@@ -15,6 +15,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //For register
   final AuthController _authController = AuthController();
 
+  //CircularProgress için
+  bool _isLoading = false;
   // E-posta ve şifre için controller'lar
   late String email;
 
@@ -22,12 +24,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   late String password;
 
+  bool _isObscure = true;
+
   // Formu kontrol etmek için bir fonksiyon
   void _submitForm(BuildContext context) async {
+    BuildContext localContext = context;
+    setState(() {
+      _isLoading = true;
+    });
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
-      BuildContext localContext = context;
-
       String res =
           await _authController.registerNewUser(email, fullName, password);
       if (res == 'Success') {
@@ -39,7 +45,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ScaffoldMessenger.of(localContext)
               .showSnackBar(SnackBar(content: Text('Account created')));
         });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
+      Future.delayed(Duration.zero, () {
+        ScaffoldMessenger.of(localContext)
+            .showSnackBar(SnackBar(content: Text(res)));
+      });
     } else {
       // Form geçerli değilse kullanıcıya hata mesajı göster
       ScaffoldMessenger.of(context)
@@ -176,6 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   TextFormField(
+                    obscureText: _isObscure,
                     onChanged: (value) {
                       password = value;
                     },
@@ -206,7 +221,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 20,
                           ),
                         ),
-                        suffixIcon: Icon(Icons.visibility)),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure;
+                              });
+                            },
+                            icon: Icon(_isObscure
+                                ? Icons.visibility
+                                : Icons.visibility_off))),
                   ),
                   SizedBox(
                     height: 20,
@@ -222,13 +245,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(5),
                           color: Colors.purple),
                       child: Center(
-                          child: Text(
-                        "Sign Up",
-                        style: GoogleFonts.getFont('Lato',
-                            fontSize: 18,
-                            //fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )),
+                          child: _isLoading
+                              ? CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  "Sign Up",
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontSize: 18,
+                                      //fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                )),
                     ),
                   ),
                   SizedBox(
