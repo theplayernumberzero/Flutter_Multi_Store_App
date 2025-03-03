@@ -29,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
   // Formu kontrol etmek için bir fonksiyon
   void _submitForm(BuildContext context) async {
     BuildContext localContext = context;
+    if (_isLoading) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -200,9 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                   ),
                   GestureDetector(
-                    onTap: () {
-                      _submitForm(context);
-                    },
+                    onTap: () => _submitForm(context),
                     child: Container(
                       width: 319,
                       height: 50,

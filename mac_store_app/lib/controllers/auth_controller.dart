@@ -15,7 +15,10 @@ class AuthController {
           .createUserWithEmailAndPassword(email: email, password: password);
 
       //Create collection buyers. Its contain all registered users
-      await _firestore.collection('buyers').doc(userCredential.user!.uid).set({
+      await _firestore
+          .collection(FirebaseCollections.buyers.name)
+          .doc(userCredential.user!.uid)
+          .set({
         //Pass data
         'fullname': fullName,
         'profileImage': "", //leave it empty
@@ -58,4 +61,9 @@ class AuthController {
 
     return res;
   }
+}
+
+enum FirebaseCollections {
+  buyers,
+  sellers,
 }

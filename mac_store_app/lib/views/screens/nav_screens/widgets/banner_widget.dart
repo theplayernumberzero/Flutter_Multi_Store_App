@@ -24,6 +24,7 @@ class _BannerWidgetState extends State<BannerWidget> {
         _bannerImage
             .add(doc['image']); //kayıtlı doc un image proproetysine erişildi
       });
+      setState(() {});
     });
   }
 
