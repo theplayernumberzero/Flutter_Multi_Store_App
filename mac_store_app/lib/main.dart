@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: MainScreen(),
+        home: LoginScreen(),
         //Dependecy injection
         initialBinding: BindingsBuilder(() {
           Get.put<CategoryController>(CategoryController());
