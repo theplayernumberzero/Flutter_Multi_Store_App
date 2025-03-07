@@ -31,7 +31,7 @@ class BannerListWidget extends StatelessWidget {
             final categoryData = snapshot.data!.docs[index];
             return Column(
               children: [
-                Image.network(categoryData['image'], height: 50, width: 50),
+                Image.network(categoryData['image'], height: 100, width: 150),
               ],
             );
           },

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class UploadBannerScreen extends StatefulWidget {
-  static const String id = "/categoryScreen";
+  static const String id = "/uploadBannerScreen";
   const UploadBannerScreen({super.key});
 
   @override
@@ -59,7 +59,9 @@ class _CategoryScreenState extends State<UploadBannerScreen> {
           .set({'image': imageUrl})
           .whenComplete(() {
             EasyLoading.dismiss();
-            _image = null;
+            setState(() {
+              _image = null;
+            });
           });
     } else {
       EasyLoading.dismiss();

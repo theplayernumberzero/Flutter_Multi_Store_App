@@ -62,7 +62,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
             .set({'categoryName': categoryName, 'categoryImage': imageUrl})
             .whenComplete(() {
               EasyLoading.dismiss();
-              _image = null;
+              setState(() {
+                _image = null;
+              });
             });
       } else {
         EasyLoading.dismiss();
