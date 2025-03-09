@@ -56,9 +56,49 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return AdminScaffold(
-      appBar: AppBar(backgroundColor: Colors.blue, title: Text("Management")),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text(
+          "Management",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 4,
+          ),
+        ),
+      ),
       //with named route we can navigate between screens
       sideBar: SideBar(
+        header: Container(
+          height: 50,
+          width: double.infinity, //Give width of sidebar
+          decoration: BoxDecoration(color: Colors.black),
+          child: Center(
+            child: Text(
+              "Multi Vendor Admin",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+        ),
+        footer: Container(
+          height: 50,
+          width: double.infinity, //Give width of sidebar
+          color: Colors.black,
+          child: Center(
+            child: Text(
+              "Footer",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
         items: [
           AdminMenuItem(
             title: 'Vendors',

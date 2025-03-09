@@ -64,6 +64,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
+  bool _isLoading = false;
+
   //Upload product images to storage
   uploadImageToStorage() async {
     for (var image in _images) {
@@ -89,20 +91,35 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   //Upolad products to cloud function
   uploadData() async {
+    setState(() {
+      _isLoading = true;
+    });
     await uploadImageToStorage();
     if (_imagesUrls.isNotEmpty) {
       final productId = Uuid().v4();
-      await _firestore.collection('products').doc(productId).set({
-        'productId': productId,
-        'productName': productName,
-        'productPrice': productPrice,
-        'productSize': _sizeList,
-        'category': selectedCategory,
-        'description': description,
-        'discount': discount,
-        'quantity': quantity,
-        'productImage': _imagesUrls,
-      });
+      await _firestore
+          .collection('products')
+          .doc(productId)
+          .set({
+            'productId': productId,
+            'productName': productName,
+            'productPrice': productPrice,
+            'productSize': _sizeList,
+            'category': selectedCategory,
+            'description': description,
+            'discount': discount,
+            'quantity': quantity,
+            'productImage': _imagesUrls,
+          })
+          .whenComplete(() {
+            setState(() {
+              //Clear datas after update
+              _isLoading = false;
+              _formKey.currentState!.reset();
+              _imagesUrls.clear();
+              _images.clear();
+            });
+          });
     }
   }
 
@@ -365,14 +382,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(
-                    child: Text(
-                      "Upload Product",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child:
+                        _isLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                              "Upload Product",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                   ),
                 ),
               ),
