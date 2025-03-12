@@ -1,4 +1,4 @@
-class CardModels {
+class CartModels {
   final String productName;
   final int productPrice;
   final String categoryName;
@@ -10,7 +10,7 @@ class CardModels {
   final int discount;
   final String description;
 
-  CardModels(
+  CartModels(
       {required this.productName,
       required this.productPrice,
       required this.categoryName,

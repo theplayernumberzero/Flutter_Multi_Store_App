@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mac_store_app/provider/card_provider.dart';
+import 'package:mac_store_app/provider/cart_provider.dart';
 
 //We make changes for use to ref
 class ProductDetailScreen extends ConsumerStatefulWidget {
@@ -17,7 +17,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     //wont rebuild if there is a change
-    final _cardProvider = ref.read(cardProvider.notifier);
+    final _cartProvider = ref.read(cardProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -196,7 +196,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         padding: EdgeInsets.all(8),
         child: GestureDetector(
           onTap: () {
-            _cardProvider.addProductToCard(
+            _cartProvider.addProductToCard(
                 productName: widget.productData['productName'],
                 productPrice: widget.productData['productPrice'],
                 categoryName: widget.productData['category'],

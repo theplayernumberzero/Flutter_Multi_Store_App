@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mac_store_app/models/card_models.dart';
+import 'package:mac_store_app/models/cart_models.dart';
 
 //Generally accesible for project
 final cardProvider =
-    StateNotifierProvider<CardNotifier, Map<String, CardModels>>((ref) {
+    StateNotifierProvider<CardNotifier, Map<String, CartModels>>((ref) {
   return CardNotifier();
 });
 
-class CardNotifier extends StateNotifier<Map<String, CardModels>> {
+class CardNotifier extends StateNotifier<Map<String, CartModels>> {
   CardNotifier() : super({}); //Initialize empty class
 
   void addProductToCard(
@@ -27,7 +27,7 @@ class CardNotifier extends StateNotifier<Map<String, CardModels>> {
       state = {
         //store item
         ...state,
-        productId: CardModels(
+        productId: CartModels(
             productName: state[productId]!.productName,
             productPrice: state[productId]!.productPrice,
             categoryName: state[productId]!.categoryName,
@@ -44,7 +44,7 @@ class CardNotifier extends StateNotifier<Map<String, CardModels>> {
       //store item
       state = {
         ...state,
-        productId: CardModels(
+        productId: CartModels(
             productName: productName,
             productPrice: productPrice,
             categoryName: categoryName,
@@ -60,5 +60,5 @@ class CardNotifier extends StateNotifier<Map<String, CardModels>> {
   }
 
   //Retrieve value of object
-  Map<String, CardModels> get getCardItem => state;
+  Map<String, CartModels> get getCardItem => state;
 }
