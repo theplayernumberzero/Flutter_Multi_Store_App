@@ -3,7 +3,7 @@ class CartModels {
   final int productPrice;
   final String categoryName;
   final List imageUrl;
-  final int quantity; //total amount buyer wants to but
+  int quantity; //total amount buyer wants to but
   final int inStock; //total amount shop have
   final String productId;
   final String productSize;

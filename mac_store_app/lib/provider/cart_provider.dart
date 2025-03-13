@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mac_store_app/models/cart_models.dart';
 
 //Generally accesible for project
-final cardProvider =
+final cartProvider =
     StateNotifierProvider<CardNotifier, Map<String, CartModels>>((ref) {
   return CardNotifier();
 });
@@ -57,6 +57,45 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
             description: description)
       };
     }
+  }
+
+  //Function for remove item from cart, carttakilerin hepsi state objectte depolanır
+  void removeItem(String productId) {
+    state.remove(productId);
+
+    //notify listeners that state has changed
+    state = {...state};
+  }
+
+  //function for incrementing item on cart
+  void incrementItem(String productId) {
+    if (state.containsKey(productId)) {
+      state[productId]!.quantity++;
+    }
+
+    //notify listeners that state has changed
+    state = {...state};
+  }
+
+  //function for decrement item on cart
+  void decrementItem(String productId) {
+    if (state.containsKey(productId)) {
+      state[productId]!.quantity--;
+    }
+
+    //notify listeners that state has changed
+    state = {...state};
+  }
+
+  //function for calculating total
+  double calculateTotalAmount() {
+    double totalAmount = 0.0;
+
+    state.forEach((productId, cartItem) {
+      totalAmount += cartItem.quantity * cartItem.discount;
+    });
+
+    return totalAmount;
   }
 
   //Retrieve value of object

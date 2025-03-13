@@ -17,7 +17,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     //wont rebuild if there is a change
-    final _cartProvider = ref.read(cardProvider.notifier);
+    final _cartProvider = ref.read(cartProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: Row(
