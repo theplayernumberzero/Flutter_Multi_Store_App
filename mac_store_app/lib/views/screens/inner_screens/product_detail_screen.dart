@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
+import 'package:mac_store_app/provider/favorite_provider.dart';
 
 //We make changes for use to ref
 class ProductDetailScreen extends ConsumerStatefulWidget {
@@ -17,7 +18,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     //wont rebuild if there is a change
-    final _cartProvider = ref.read(cartProvider.notifier);
+    final cartProviderData = ref.read(cartProvider.notifier);
+    final favoriteProviderData = ref.read(favoriteProvider.notifier);
+    ref.watch(favoriteProvider);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -32,11 +35,32 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   fontWeight: FontWeight.w600),
             ),
             IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.favorite,
-                  color: Colors.red,
-                ))
+                onPressed: () {
+                  favoriteProviderData.addProductToFavorite(
+                    productName: widget.productData['productName'],
+                    productId: widget.productData['productId'],
+                    imageUrl: widget.productData['productImage'],
+                    productPrice: widget.productData['productPrice'],
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    margin: EdgeInsets.all(16),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.grey,
+                    content: Text("Item added to favorite: " +
+                        widget.productData['productName']),
+                  ));
+                },
+                icon: favoriteProviderData.getFavoriteItem
+                        .containsKey(widget.productData['productId'])
+                    ? Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      )
+                    : Icon(
+                        Icons.favorite_border,
+                        color: Colors.red,
+                      )),
           ],
         ),
         centerTitle: true,
@@ -196,7 +220,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         padding: EdgeInsets.all(8),
         child: GestureDetector(
           onTap: () {
-            _cartProvider.addProductToCard(
+            cartProviderData.addProductToCard(
                 productName: widget.productData['productName'],
                 productPrice: widget.productData['productPrice'],
                 categoryName: widget.productData['category'],
@@ -212,7 +236,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               margin: EdgeInsets.all(16),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.grey,
-              content: Text(widget.productData['productName']),
+              content: Text(
+                  "Item added to cart: " + widget.productData['productName']),
             ));
           },
           child: Container(
