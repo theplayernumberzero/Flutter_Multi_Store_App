@@ -87,6 +87,12 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
     state = {...state};
   }
 
+  void clearCartData() {
+    state.clear();
+    //notify listeners that state has changed
+    state = {...state};
+  }
+
   //function for calculating total
   double calculateTotalAmount() {
     double totalAmount = 0.0;
