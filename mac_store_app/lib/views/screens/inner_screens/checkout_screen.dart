@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
+import 'package:mac_store_app/views/screens/inner_screens/shipping_address_screen.dart';
+import 'package:mac_store_app/views/screens/main_screen.dart';
 import 'package:mac_store_app/views/screens/nav_screens/home_screen.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,6 +21,37 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   bool isLoading = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _selectedPaymentMethod = 'stripe';
+
+  //User information
+  String state = '';
+  String city = '';
+  String locality = '';
+  String pincode = '';
+
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
+  }
+
+  //get user datas
+  void getUserData() {
+    Stream<DocumentSnapshot> userDataStream =
+        _firestore.collection('buyers').doc(_auth.currentUser!.uid).snapshots();
+
+    //listen stream and update the data
+    userDataStream.listen((DocumentSnapshot userData) {
+      if (userData.exists) {
+        setState(() {
+          state = userData.get('state');
+          city = userData.get('city');
+          locality = userData.get('locality');
+          pincode = userData.get('pincode');
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProviderData = ref.read(cartProvider);
@@ -33,7 +66,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ShippingAddressScreen()));
+                },
                 child: SizedBox(
                   width: 335,
                   height: 74,
@@ -301,82 +339,106 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           ),
         ),
       ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: GestureDetector(
-          onTap: () async {
-            //Place order
-            if (_selectedPaymentMethod == 'stripe') {
-            } else {
-              setState(() {
-                isLoading = true;
-              });
-              for (var item
-                  in ref.read(cartProvider.notifier).getCardItem.values) {
-                //getting user
-                DocumentSnapshot userDoc = await _firestore
-                    .collection("buyers")
-                    .doc(_auth.currentUser!.uid)
-                    .get();
-                CollectionReference orderRefer =
-                    _firestore.collection('orders');
-                //Auto generate unique id
-                final orderId = Uuid().v4();
-                await orderRefer.doc(orderId).set({
-                  'orderId': orderId,
-                  'productName': item.productName,
-                  'productId': item.productId,
-                  'size': item.productSize,
-                  'quantity': item.quantity,
-                  'price': item.quantity * item.productPrice,
-                  'category': item.categoryName,
-                  'productImage': item.imageUrl[0],
-                  'state': (userDoc.data() as Map<String, dynamic>)['state'],
-                  'email': (userDoc.data() as Map<String, dynamic>)['email'],
-                  'locality':
-                      (userDoc.data() as Map<String, dynamic>)['locality'],
-                  'fullName':
-                      (userDoc.data() as Map<String, dynamic>)['fullname'],
-                  'buyerId': _auth.currentUser!.uid,
-                  'deliveredCount': 0,
-                  'delivered': false,
-                  'processing': true,
-                }).whenComplete(() {
-                  cartProviderData.clear();
-                  //Not stacked
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()));
-                  setState(() {
-                    isLoading = false;
-                  });
-                });
-              }
-            }
-          },
-          child: Container(
-            height: 50,
-            width: MediaQuery.of(context).size.width - 50,
-            decoration: BoxDecoration(
-                color: Colors.deepPurpleAccent,
-                borderRadius: BorderRadius.circular(12)),
-            child: Center(
-              child: isLoading
-                  ? CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                  : Text(
-                      "PLACE ORDER",
-                      style: GoogleFonts.lato(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        height: 1.4,
-                      ),
-                    ),
+      bottomSheet: state == ""
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ShippingAddressScreen()));
+                  },
+                  child: Text(
+                    "Add address",
+                    style: TextStyle(fontSize: 20),
+                  )),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: GestureDetector(
+                onTap: () async {
+                  //Place order
+                  if (_selectedPaymentMethod == 'stripe') {
+                  } else {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    for (var item in ref
+                        .read(cartProvider.notifier)
+                        .getCartItem
+                        .values
+                        .toList()) {
+                      //getting user
+                      DocumentSnapshot userDoc = await _firestore
+                          .collection("buyers")
+                          .doc(_auth.currentUser!.uid)
+                          .get();
+                      CollectionReference orderRefer =
+                          _firestore.collection('orders');
+                      //Auto generate unique id
+                      final orderId = Uuid().v4();
+                      await orderRefer.doc(orderId).set({
+                        'orderId': orderId,
+                        'productName': item.productName,
+                        'productId': item.productId,
+                        'size': item.productSize,
+                        'quantity': item.quantity,
+                        'price': item.quantity * item.productPrice,
+                        'category': item.categoryName,
+                        'productImage': item.imageUrl[0],
+                        'state':
+                            (userDoc.data() as Map<String, dynamic>)['state'],
+                        'email':
+                            (userDoc.data() as Map<String, dynamic>)['email'],
+                        'locality': (userDoc.data()
+                            as Map<String, dynamic>)['locality'],
+                        'fullName': (userDoc.data()
+                            as Map<String, dynamic>)['fullname'],
+                        'buyerId': _auth.currentUser!.uid,
+                        'deliveredCount': 0,
+                        'delivered': false,
+                        'processing': true,
+                      }).whenComplete(() {
+                        cartProviderData.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('İşlem başarılı')));
+                        //Not stacked
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainScreen()));
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
+                    }
+                  }
+                },
+                child: Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width - 50,
+                  decoration: BoxDecoration(
+                      color: Colors.deepPurpleAccent,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Center(
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            "PLACE ORDER",
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              height: 1.4,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

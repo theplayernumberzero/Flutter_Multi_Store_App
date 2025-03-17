@@ -170,6 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                       return null; // Valid
                     },
+                    obscureText: _isObscure,
                     decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,

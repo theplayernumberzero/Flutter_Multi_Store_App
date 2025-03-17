@@ -105,5 +105,5 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
   }
 
   //Retrieve value of object
-  Map<String, CartModels> get getCardItem => state;
+  Map<String, CartModels> get getCartItem => state;
 }
