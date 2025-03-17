@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/views/screens/inner_screens/order_detail_screen.dart';
+import 'package:mac_store_app/views/screens/main_screen.dart';
 
 class OrderScreen extends StatelessWidget {
   OrderScreen({super.key});
@@ -92,12 +94,31 @@ class OrderScreen extends StatelessWidget {
 
             if (snapshot.data!.docs.isEmpty) {
               return Center(
-                child: Text(
-                  "You have no order",
-                  style: GoogleFonts.lato(
-                      fontSize: 24,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "You have no order",
+                      style: GoogleFonts.lato(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MainScreen()));
+                        },
+                        child: Text(
+                          "Go to Home Page",
+                          style: GoogleFonts.lato(
+                              fontSize: 24,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500),
+                        ))
+                  ],
                 ),
               );
             }
@@ -109,7 +130,14 @@ class OrderScreen extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.all(24),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrderDetailScreen(
+                                    orderData: orderData,
+                                  )));
+                    },
                     child: Container(
                       width: 335,
                       height: 153,
