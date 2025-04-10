@@ -148,11 +148,23 @@ class ProducutItemWidget extends StatelessWidget {
                 style: TextStyle(color: Colors.blueGrey, fontSize: 12),
               ),
             ),
+            productData['rating'] == 0
+                ? const SizedBox()
+                : Positioned(
+                    left: 8,
+                    top: 158,
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.amberAccent,
+                      size: 12,
+                    )),
             Positioned(
               left: 23,
               top: 155,
               child: Text(
-                '4..5',
+                productData['rating'] == 0
+                    ? ""
+                    : productData['rating'].toString(),
                 style: GoogleFonts.lato(color: Colors.blueGrey, fontSize: 12),
               ),
             ),
