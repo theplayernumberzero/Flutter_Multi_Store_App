@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mac_store_app/controllers/auth_controller.dart';
-import 'package:mac_store_app/vendor/views/auth/vendor_login_screen.dart';
+import 'package:mac_store_app/vendor/controllers/vendor_controller.dart';
 import 'package:mac_store_app/vendor/views/auth/vendor_register_screen.dart';
+import 'package:mac_store_app/vendor/views/screens/main_vendor_screen.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
-import 'package:mac_store_app/views/screens/main_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class VendorLoginScreen extends StatefulWidget {
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<VendorLoginScreen> createState() => _VendorLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _VendorLoginScreenState extends State<VendorLoginScreen> {
   //It is for access to current situation of form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   //For login
-  final AuthController _authController = AuthController();
+  final VendorAuthController _authController = VendorAuthController();
 
   //CircularProgress için
   bool _isLoading = false;
@@ -44,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //go to main screen
         Future.delayed(Duration.zero, () {
           Navigator.push(localContext, MaterialPageRoute(builder: (context) {
-            return MainScreen();
+            return MainVendorScreen();
           }));
 
           ScaffoldMessenger.of(localContext)
@@ -88,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Login your account",
+                    "Login vendor's account",
                     style: GoogleFonts.getFont(
                         //Font proporty as first parameter
                         'Lato',

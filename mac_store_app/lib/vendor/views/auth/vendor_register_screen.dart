@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mac_store_app/controllers/auth_controller.dart';
+import 'package:mac_store_app/vendor/controllers/vendor_controller.dart';
 import 'package:mac_store_app/vendor/views/auth/vendor_login_screen.dart';
-import 'package:mac_store_app/vendor/views/auth/vendor_register_screen.dart';
-import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
-import 'package:mac_store_app/views/screens/main_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class VendorRegisterScreen extends StatefulWidget {
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<VendorRegisterScreen> createState() => _VendorRegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
   //It is for access to current situation of form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  //For login
-  final AuthController _authController = AuthController();
+  //For register
+  final VendorAuthController _authController = VendorAuthController();
 
   //CircularProgress için
   bool _isLoading = false;
-
   // E-posta ve şifre için controller'lar
   late String email;
+
+  late String fullName;
 
   late String password;
 
@@ -31,40 +29,31 @@ class _LoginScreenState extends State<LoginScreen> {
   // Formu kontrol etmek için bir fonksiyon
   void _submitForm(BuildContext context) async {
     BuildContext localContext = context;
-    if (_isLoading) return;
-
     setState(() {
       _isLoading = true;
     });
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
-
-      String res = await _authController.loginUser(email, password);
+      String res =
+          await _authController.registerNewUser(email, fullName, password);
       if (res == 'Success') {
-        //go to main screen
         Future.delayed(Duration.zero, () {
           Navigator.push(localContext, MaterialPageRoute(builder: (context) {
-            return MainScreen();
+            return VendorLoginScreen();
           }));
 
           ScaffoldMessenger.of(localContext)
-              .showSnackBar(SnackBar(content: Text('Logged in')));
+              .showSnackBar(SnackBar(content: Text('Account created')));
         });
-        print("Logged in");
       } else {
-        print(res);
         setState(() {
           _isLoading = false;
         });
-        Future.delayed(Duration.zero, () {
-          ScaffoldMessenger.of(localContext)
-              .showSnackBar(SnackBar(content: Text(res)));
-        });
       }
-      print(email);
-      print(password);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Form Geçerli')));
+      Future.delayed(Duration.zero, () {
+        ScaffoldMessenger.of(localContext)
+            .showSnackBar(SnackBar(content: Text(res)));
+      });
     } else {
       // Form geçerli değilse kullanıcıya hata mesajı göster
       ScaffoldMessenger.of(context)
@@ -78,17 +67,17 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white.withOpacity(0.95),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          //Scrollable
-          child: Form(
-            key: _formKey,
-            child: Center(
-              //horizontally centered
+        child: Center(
+          //horizontally centered
+          child: SingleChildScrollView(
+            //For making widget scrollable
+            child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Login your account",
+                    "Create Vendor's account",
                     style: GoogleFonts.getFont(
                         //Font proporty as first parameter
                         'Lato',
@@ -154,12 +143,54 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
+                      "Full Name",
+                      style: GoogleFonts.getFont('Nunito Sans',
+                          fontWeight: FontWeight.w600, letterSpacing: 0.2),
+                    ),
+                  ),
+                  TextFormField(
+                    onChanged: (value) {
+                      fullName = value;
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter your full name';
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(9)),
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        labelText: "Enter your full name",
+                        labelStyle: GoogleFonts.getFont('Nunito Sans',
+                            fontSize: 14, letterSpacing: 0.1),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Image.asset(
+                            "assets/icons/user.jpeg",
+                            width: 20,
+                            height: 20,
+                          ),
+                        )),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
                       "Password",
                       style: GoogleFonts.getFont('Nunito Sans',
                           fontWeight: FontWeight.w600, letterSpacing: 0.2),
                     ),
                   ),
                   TextFormField(
+                    obscureText: _isObscure,
                     onChanged: (value) {
                       password = value;
                     },
@@ -172,7 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                       return null; // Valid
                     },
-                    obscureText: _isObscure,
                     decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
@@ -205,7 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 20,
                   ),
                   GestureDetector(
-                    onTap: () => _submitForm(context),
+                    onTap: () {
+                      _submitForm(context);
+                    },
                     child: Container(
                       width: 319,
                       height: 50,
@@ -218,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.white,
                                 )
                               : Text(
-                                  "Sign In",
+                                  "Sign Up",
                                   style: GoogleFonts.getFont('Lato',
                                       fontSize: 18,
                                       //fontWeight: FontWeight.bold,
@@ -246,61 +278,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   builder: (context) => VendorLoginScreen()));
                         },
                         child: Text("Sign In",
-                            style: GoogleFonts.roboto(
-                                color: Colors.purple,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Need an account?",
-                          style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w500, letterSpacing: 1)),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterScreen()));
-                        },
-                        child: Text("Sign Up",
-                            style: GoogleFonts.roboto(
-                                color: Colors.purple,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Become a vendor?",
-                          style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w500, letterSpacing: 1)),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      VendorRegisterScreen()));
-                        },
-                        child: Text("Sign Up",
                             style: GoogleFonts.roboto(
                                 color: Colors.purple,
                                 fontWeight: FontWeight.bold,
