@@ -15,8 +15,8 @@ class _MainVendorScreenState extends State<MainVendorScreen> {
   int pageIndex = 0;
   final List<Widget> _pages = [
     EarningsScreen(),
-    EditProductScreen(),
     UploadProductScreen(),
+    EditProductScreen(),
     VendorProfileScreen()
   ];
   @override

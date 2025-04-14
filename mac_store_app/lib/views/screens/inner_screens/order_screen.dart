@@ -304,6 +304,7 @@ class OrderScreen extends StatelessWidget {
                                     Positioned(
                                       top: 0,
                                       left: 0,
+                                      //burayı vendor kısmına ekleyip kullanıcıdan çekeceğim (delivered true olunca kullanıcı order silemez)
                                       child: GestureDetector(
                                         onTap: () async {
                                           await _firestore

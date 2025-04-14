@@ -1,6 +1,6 @@
 class CartModels {
   final String productName;
-  final int productPrice;
+  final double productPrice;
   final String categoryName;
   final List imageUrl;
   int quantity; //total amount buyer wants to but

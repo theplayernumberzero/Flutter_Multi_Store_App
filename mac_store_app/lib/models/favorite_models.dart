@@ -3,7 +3,7 @@ class FavoriteModels {
   final String productId;
   final List imageUrl;
 
-  final int productPrice;
+  final double productPrice;
 
   FavoriteModels(
       {required this.productName,
