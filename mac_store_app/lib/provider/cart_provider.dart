@@ -20,7 +20,8 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
       required String productId,
       required String productSize,
       required int discount,
-      required String description}) {
+      required String description,
+      required String vendorId}) {
     //check if product added already
     if (state.containsKey(productId)) {
       //Update state
@@ -38,7 +39,8 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
             productId: state[productId]!.productId,
             productSize: state[productId]!.productSize,
             discount: state[productId]!.discount,
-            description: state[productId]!.description),
+            description: state[productId]!.description,
+            vendorId: state[productId]!.vendorId),
       };
     } else {
       //store item
@@ -54,7 +56,8 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
             productId: productId,
             productSize: productSize,
             discount: discount,
-            description: description)
+            description: description,
+            vendorId: vendorId)
       };
     }
   }

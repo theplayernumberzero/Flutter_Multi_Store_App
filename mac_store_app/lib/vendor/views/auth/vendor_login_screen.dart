@@ -231,7 +231,7 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Already have an vendor account?",
+                      Text("Already have an buyer account?",
                           style: GoogleFonts.roboto(
                               fontWeight: FontWeight.w500, letterSpacing: 1)),
                       SizedBox(

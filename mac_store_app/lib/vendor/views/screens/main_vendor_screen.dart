@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/earnings_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/edit_product_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/upload_product_screen.dart';
+import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/vendor_orders_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/vendor_profile_screen.dart';
 
 class MainVendorScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class _MainVendorScreenState extends State<MainVendorScreen> {
   final List<Widget> _pages = [
     EarningsScreen(),
     UploadProductScreen(),
+    VendorOrdersScreen(),
     EditProductScreen(),
     VendorProfileScreen()
   ];
@@ -35,6 +38,8 @@ class _MainVendorScreenState extends State<MainVendorScreen> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.money), label: "Earning"),
             BottomNavigationBarItem(icon: Icon(Icons.upload), label: "Upload"),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.cart), label: "Orders"),
             BottomNavigationBarItem(icon: Icon(Icons.edit), label: "Edit"),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           ]),

@@ -399,6 +399,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         'deliveredCount': 0,
                         'delivered': false,
                         'processing': true,
+                        'vendorId': item.vendorId,
                       }).whenComplete(() {
                         cartProviderData.clear();
                         ScaffoldMessenger.of(context).showSnackBar(
