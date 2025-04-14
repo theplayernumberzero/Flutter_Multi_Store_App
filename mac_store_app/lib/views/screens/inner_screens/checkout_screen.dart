@@ -288,7 +288,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                       width: 16,
                                     ),
                                     Text(
-                                      cartItem.discount.toStringAsFixed(2),
+                                      (cartItem.quantity *
+                                              (cartItem.productPrice -
+                                                  cartItem.productPrice *
+                                                      cartItem.discount /
+                                                      100))
+                                          .toStringAsFixed(2),
                                       style: GoogleFonts.lato(
                                         fontSize: 16,
                                         color: Colors.purple,
@@ -361,6 +366,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   //Place order
                   if (_selectedPaymentMethod == 'stripe') {
                   } else {
+                    //burada order oluşturuyorum. Quantity miktarına göre productstan ürün düşemm lazım
                     setState(() {
                       isLoading = true;
                     });
@@ -384,7 +390,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         'productId': item.productId,
                         'size': item.productSize,
                         'quantity': item.quantity,
-                        'price': item.quantity * item.productPrice,
+                        'price': item.quantity *
+                            (item.productPrice -
+                                item.productPrice * item.discount / 100),
                         'category': item.categoryName,
                         'productImage': item.imageUrl[0],
                         'state':

@@ -101,7 +101,9 @@ class CardNotifier extends StateNotifier<Map<String, CartModels>> {
     double totalAmount = 0.0;
 
     state.forEach((productId, cartItem) {
-      totalAmount += cartItem.quantity * cartItem.discount;
+      totalAmount += cartItem.quantity *
+          (cartItem.productPrice -
+              (cartItem.productPrice * cartItem.discount / 100));
     });
 
     return totalAmount;

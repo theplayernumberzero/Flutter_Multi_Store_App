@@ -262,24 +262,32 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   "Item added to cart: " + widget.productData['productName']),
             ));
           },
-          child: Container(
-            width: 386,
-            height: 48,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-                color: Colors.deepPurpleAccent,
-                borderRadius: BorderRadius.circular(24)),
-            child: Center(
-              child: Text(
-                "ADD TO CARD",
-                style: GoogleFonts.lato(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+          child: widget.productData['quantity'] == 0
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(
+                    "Ürün maalesef tükenmiştir",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                )
+              : Container(
+                  width: 386,
+                  height: 48,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      color: Colors.deepPurpleAccent,
+                      borderRadius: BorderRadius.circular(24)),
+                  child: Center(
+                    child: Text(
+                      "ADD TO CARD",
+                      style: GoogleFonts.lato(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         ),
       ),
     );

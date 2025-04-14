@@ -67,7 +67,7 @@ class ProducutItemWidget extends StatelessWidget {
               left: 8,
               top: 207,
               child: Text(
-                '\$${productData['discount']}',
+                '\$${productData['productPrice'] - (productData['productPrice'] * productData['discount'] / 100)}',
                 style: GoogleFonts.lato(
                     fontSize: 20,
                     letterSpacing: 0.4,
@@ -76,7 +76,7 @@ class ProducutItemWidget extends StatelessWidget {
             ),
             //previous price
             Positioned(
-              left: 52,
+              left: 80,
               top: 210,
               child: Text(
                 '\$${productData['productPrice']}',

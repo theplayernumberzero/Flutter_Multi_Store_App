@@ -206,13 +206,33 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Text(
-                                        cartItem.productPrice
-                                            .toStringAsFixed(2),
-                                        style: GoogleFonts.lato(
-                                            fontSize: 16,
-                                            color: Colors.deepPurpleAccent,
-                                            fontWeight: FontWeight.bold),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            cartItem.productPrice
+                                                .toStringAsFixed(2),
+                                            style: GoogleFonts.lato(
+                                                fontSize: 16,
+                                                color: Colors.deepPurpleAccent,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            (cartItem.productPrice -
+                                                    (cartItem.discount *
+                                                        cartItem.productPrice /
+                                                        100))
+                                                .toStringAsFixed(2),
+                                            style: GoogleFonts.lato(
+                                                fontSize: 16,
+                                                color: Colors.deepPurpleAccent,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
                                       ),
                                       Row(
                                         children: [
