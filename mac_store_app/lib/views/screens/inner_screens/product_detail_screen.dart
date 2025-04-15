@@ -37,11 +37,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             IconButton(
                 onPressed: () {
                   favoriteProviderData.addProductToFavorite(
-                    productName: widget.productData['productName'],
-                    productId: widget.productData['productId'],
-                    imageUrl: widget.productData['productImage'],
-                    productPrice: widget.productData['productPrice'],
-                  );
+                      productName: widget.productData['productName'],
+                      productId: widget.productData['productId'],
+                      imageUrl: widget.productData['productImage'],
+                      productPrice: widget.productData['productPrice'],
+                      discount: widget.productData['discount']);
 
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     margin: EdgeInsets.all(16),
@@ -133,14 +133,32 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     color: Colors.deepPurpleAccent,
                   ),
                 ),
-                Text(
-                  "\$${widget.productData['productPrice'].toStringAsFixed(2)}",
-                  style: GoogleFonts.roboto(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    color: Colors.deepPurpleAccent,
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "\$${widget.productData['productPrice'].toStringAsFixed(2)}",
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        color: Colors.black,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        "\$${(widget.productData['productPrice'] - (widget.productData['productPrice'] * widget.productData['discount'] / 100)).toStringAsFixed(2)}",
+                        style: GoogleFonts.roboto(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),

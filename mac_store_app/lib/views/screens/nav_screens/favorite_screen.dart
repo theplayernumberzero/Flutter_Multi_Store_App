@@ -149,10 +149,26 @@ class FavoriteScreen extends ConsumerWidget {
                                 top: 16,
                                 left: 275,
                                 child: Text(
-                                  wishData.productPrice.toStringAsFixed(2),
+                                  (wishData.productPrice -
+                                          (wishData.productPrice *
+                                              wishData.discount /
+                                              100))
+                                      .toStringAsFixed(2),
                                   style: GoogleFonts.lato(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w600,
+                                      height: 1.3),
+                                ),
+                              ),
+                              Positioned(
+                                top: 16,
+                                left: 230,
+                                child: Text(
+                                  wishData.productPrice.toStringAsFixed(2),
+                                  style: GoogleFonts.lato(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.lineThrough,
                                       height: 1.3),
                                 ),
                               ),

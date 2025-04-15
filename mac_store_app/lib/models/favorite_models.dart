@@ -4,10 +4,12 @@ class FavoriteModels {
   final List imageUrl;
 
   final double productPrice;
+  final int discount;
 
   FavoriteModels(
       {required this.productName,
       required this.productId,
       required this.imageUrl,
-      required this.productPrice});
+      required this.productPrice,
+      required this.discount});
 }

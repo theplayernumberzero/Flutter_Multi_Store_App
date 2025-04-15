@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -110,7 +109,8 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
         'vendorId': FirebaseAuth.instance.currentUser!.uid,
         'storeName': (vendorDoc.data() as Map<String, dynamic>)['fullname'],
         'rating': 0,
-        'totalReviews': 0
+        'totalReviews': 0,
+        'isPopular': false,
       }).whenComplete(() {
         setState(() {
           //Clear datas after update

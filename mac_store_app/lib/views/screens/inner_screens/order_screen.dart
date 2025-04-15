@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/views/screens/inner_screens/order_detail_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';

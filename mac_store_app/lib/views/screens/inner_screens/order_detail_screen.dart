@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mac_store_app/controllers/auth_controller.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   //access all values of clicked data

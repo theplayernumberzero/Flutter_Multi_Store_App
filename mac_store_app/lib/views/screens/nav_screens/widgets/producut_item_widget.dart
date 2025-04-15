@@ -144,7 +144,9 @@ class ProducutItemWidget extends StatelessWidget {
               left: 56,
               top: 155,
               child: Text(
-                '500> Sold',
+                productData['quantity'] != 0
+                    ? "Last ${productData['quantity']}"
+                    : "Sold out",
                 style: TextStyle(color: Colors.blueGrey, fontSize: 12),
               ),
             ),
@@ -168,35 +170,35 @@ class ProducutItemWidget extends StatelessWidget {
                 style: GoogleFonts.lato(color: Colors.blueGrey, fontSize: 12),
               ),
             ),
-            Positioned(
-              left: 104,
-              top: 15,
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.red,
-                          spreadRadius: 0,
-                          offset: Offset(0, 7),
-                          blurRadius: 16)
-                    ]),
-              ),
-            ),
-            Positioned(
-              right: 5,
-              top: 5,
-              child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.favorite_border,
-                    color: Colors.white,
-                    size: 16,
-                  )),
-            )
+            // Positioned(
+            //   left: 104,
+            //   top: 15,
+            //   child: Container(
+            //     width: 28,
+            //     height: 28,
+            //     decoration: BoxDecoration(
+            //         color: Colors.orange,
+            //         borderRadius: BorderRadius.circular(16),
+            //         boxShadow: [
+            //           BoxShadow(
+            //               color: Colors.red,
+            //               spreadRadius: 0,
+            //               offset: Offset(0, 7),
+            //               blurRadius: 16)
+            //         ]),
+            //   ),
+            // ),
+            // Positioned(
+            //   right: 5,
+            //   top: 5,
+            //   child: IconButton(
+            //       onPressed: () {},
+            //       icon: Icon(
+            //         Icons.favorite_border,
+            //         color: Colors.white,
+            //         size: 16,
+            //       )),
+            // )
           ],
         ),
       ),

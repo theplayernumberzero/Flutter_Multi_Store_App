@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/views/screens/inner_screens/shipping_address_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
-import 'package:mac_store_app/views/screens/nav_screens/home_screen.dart';
 import 'package:uuid/uuid.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
