@@ -191,51 +191,54 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     ],
                   ),
                 ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Size: ",
-                  style: GoogleFonts.lato(
-                    color: Color(0xFF343434),
-                    fontSize: 16,
-                    letterSpacing: 1.6,
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.productData['productSize'].length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFF126881),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Text(
-                                widget.productData['productSize'][index],
-                                style: GoogleFonts.lato(color: Colors.white),
-                              ),
-                            ),
-                          ),
+          widget.productData['category'] != "Fashion"
+              ? SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Size: ",
+                        style: GoogleFonts.lato(
+                          color: Color(0xFF343434),
+                          fontSize: 16,
+                          letterSpacing: 1.6,
                         ),
-                      );
-                    },
+                      ),
+                      SizedBox(
+                        height: 50,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.productData['productSize'].length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF126881),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(
+                                      widget.productData['productSize'][index],
+                                      style:
+                                          GoogleFonts.lato(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

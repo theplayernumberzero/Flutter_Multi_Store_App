@@ -47,8 +47,19 @@ class AuthController {
   Future<String> loginUser(String email, String password) async {
     String res = 'something went wrong';
     try {
+      //Email vendors koleksiyonunda var mı kontrol et (mail unique olacağı için tel döküman gelmesi yeterli)
+      QuerySnapshot vendorQuery = await _firestore
+          .collection('buyers')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (vendorQuery.docs.isEmpty) {
+        return 'This email is not registered as a buyer.';
+      }
+
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      res = "Success";
+
+      res = 'buyer_success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         res = 'No user found for that email.';

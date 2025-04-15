@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Form geçerli ise işlemi yap
 
       String res = await _authController.loginUser(email, password);
-      if (res == 'Success') {
+      if (res == 'buyer_success') {
         //go to main screen
         Future.delayed(Duration.zero, () {
           Navigator.pushAndRemoveUntil(
@@ -65,8 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       print(email);
       print(password);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Form Geçerli')));
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Form Geçerli')));
     } else {
       // Form geçerli değilse kullanıcıya hata mesajı göster
       ScaffoldMessenger.of(context)

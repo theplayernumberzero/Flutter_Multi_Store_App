@@ -46,7 +46,7 @@ class PopularItem extends StatelessWidget {
               height: 8,
             ),
             Text(
-              "\$${productData['discount']}",
+              "\$${productData['productPrice'] - (productData['productPrice'] * productData['discount'] / 100)}",
               style: TextStyle(fontSize: 16),
             ),
             Text(

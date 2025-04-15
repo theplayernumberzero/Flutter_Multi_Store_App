@@ -15,6 +15,8 @@ class UploadProductScreen extends StatefulWidget {
 }
 
 class _UploadProductScreenState extends State<UploadProductScreen> {
+  bool _isSizeVisible = false;
+
   //for use ImagePicker
   final ImagePicker imagePicker = ImagePicker();
 
@@ -308,23 +310,42 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     //on add size if you click size etiket it will be removed
                     Row(
                       children: [
-                        Flexible(
-                          child: SizedBox(
-                            width: 200,
-                            child: TextFormField(
-                              controller: _sizeController,
-                              onChanged: (value) {
-                                setState(() {
-                                  _isEntered = true;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                labelText: 'Add Size',
-                                fillColor: Colors.grey,
-                                filled: true,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide.none,
+                        Visibility(
+                          visible: !_isSizeVisible,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Do you want to add size: "),
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSizeVisible = true;
+                                    });
+                                  },
+                                  icon: Icon(Icons.add))
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: _isSizeVisible,
+                          child: Flexible(
+                            child: SizedBox(
+                              width: 200,
+                              child: TextFormField(
+                                controller: _sizeController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _isEntered = true;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  labelText: 'Add Size',
+                                  fillColor: Colors.grey,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
                                 ),
                               ),
                             ),
