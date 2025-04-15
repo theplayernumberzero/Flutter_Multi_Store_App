@@ -1,5 +1,6 @@
 import 'package:app_web/views/side_bar_screens/buyers_screen.dart';
 import 'package:app_web/views/side_bar_screens/category_screen.dart';
+import 'package:app_web/views/side_bar_screens/is_popular_screen.dart';
 import 'package:app_web/views/side_bar_screens/orders_screen.dart';
 import 'package:app_web/views/side_bar_screens/products_screen.dart';
 import 'package:app_web/views/side_bar_screens/upload_banner_screen.dart';
@@ -48,6 +49,11 @@ class _MainScreenState extends State<MainScreen> {
       case UploadBannerScreen.id:
         setState(() {
           _selectedScreen = UploadBannerScreen();
+        });
+        break;
+      case IsPopularScreen.id:
+        setState(() {
+          _selectedScreen = IsPopularScreen();
         });
         break;
     }
@@ -129,6 +135,11 @@ class _MainScreenState extends State<MainScreen> {
             title: 'Products',
             route: ProductsScreen.id,
             icon: Icons.store,
+          ),
+          AdminMenuItem(
+            title: 'Popular Products',
+            route: IsPopularScreen.id,
+            icon: CupertinoIcons.star,
           ),
         ],
         onSelected: (item) {
