@@ -390,9 +390,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         'productId': item.productId,
                         'size': item.productSize,
                         'quantity': item.quantity,
-                        'price': item.quantity *
-                            (item.productPrice -
-                                item.productPrice * item.discount / 100),
+                        'price': (item.productPrice -
+                            item.productPrice * item.discount / 100),
                         'category': item.categoryName,
                         'productImage': item.imageUrl[0],
                         'state':

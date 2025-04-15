@@ -43,9 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res == 'Success') {
         //go to main screen
         Future.delayed(Duration.zero, () {
-          Navigator.push(localContext, MaterialPageRoute(builder: (context) {
-            return MainScreen();
-          }));
+          Navigator.pushAndRemoveUntil(
+            localContext,
+            MaterialPageRoute(builder: (context) => MainScreen()),
+            (Route<dynamic> route) => false,
+          );
 
           ScaffoldMessenger.of(localContext)
               .showSnackBar(SnackBar(content: Text('Logged in')));

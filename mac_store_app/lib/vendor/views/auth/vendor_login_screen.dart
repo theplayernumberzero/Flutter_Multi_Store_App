@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/vendor/controllers/vendor_controller.dart';
 import 'package:mac_store_app/vendor/views/auth/vendor_register_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/main_vendor_screen.dart';
+import 'package:mac_store_app/views/screens/authentication_screens/login_screen.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
 
 class VendorLoginScreen extends StatefulWidget {
@@ -42,9 +43,11 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
       if (res == 'Success') {
         //go to main screen
         Future.delayed(Duration.zero, () {
-          Navigator.push(localContext, MaterialPageRoute(builder: (context) {
-            return MainVendorScreen();
-          }));
+          Navigator.pushAndRemoveUntil(
+            localContext,
+            MaterialPageRoute(builder: (context) => MainVendorScreen()),
+            (Route<dynamic> route) => false,
+          );
 
           ScaffoldMessenger.of(localContext)
               .showSnackBar(SnackBar(content: Text('Logged in')));
@@ -242,7 +245,7 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => VendorLoginScreen()));
+                                  builder: (context) => LoginScreen()));
                         },
                         child: Text("Sign In",
                             style: GoogleFonts.roboto(
