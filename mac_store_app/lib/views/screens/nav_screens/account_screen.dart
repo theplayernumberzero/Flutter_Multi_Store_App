@@ -138,19 +138,60 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          const Positioned(
+                          // ...
+                          Positioned(
                             left: 240,
                             top: 66,
-                            child: Text(
-                              '0',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                letterSpacing: 0.4,
-                                fontFamily: 'DM Sans Medium',
-                              ),
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: FirebaseFirestore.instance
+                                  .collection('orders')
+                                  .where('delivered', isEqualTo: true)
+                                  .where('buyerId',
+                                      isEqualTo: FirebaseAuth
+                                          .instance.currentUser?.uid)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Text(
+                                    '...',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      letterSpacing: 0.4,
+                                      fontFamily: 'DM Sans Medium',
+                                    ),
+                                  );
+                                }
+
+                                if (snapshot.hasError) {
+                                  return const Text(
+                                    'Error',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      letterSpacing: 0.4,
+                                      fontFamily: 'DM Sans Medium',
+                                    ),
+                                  );
+                                }
+
+                                final completedCount =
+                                    snapshot.data?.docs.length ?? 0;
+
+                                return Text(
+                                  completedCount.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    letterSpacing: 0.4,
+                                    fontFamily: 'DM Sans Medium',
+                                  ),
+                                );
+                              },
                             ),
                           ),
+
                           Positioned(
                             left: 212,
                             top: 99,
