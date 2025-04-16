@@ -343,10 +343,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               alignment: Alignment(0.83, -1),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CheckoutScreen()));
+                  if (totalAmount != 0.0) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CheckoutScreen()));
+                  }
                 },
                 child: Container(
                   width: 166,

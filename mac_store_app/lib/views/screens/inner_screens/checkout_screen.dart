@@ -362,28 +362,68 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               padding: const EdgeInsets.all(12.0),
               child: GestureDetector(
                 onTap: () async {
-                  //Place order
                   if (_selectedPaymentMethod == 'stripe') {
+                    // Stripe işlemleri burada olacak
                   } else {
-                    //burada order oluşturuyorum. Quantity miktarına göre productstan ürün düşemm lazım
                     setState(() {
                       isLoading = true;
                     });
+
+                    bool hasStockError = false;
+
                     for (var item in ref
                         .read(cartProvider.notifier)
                         .getCartItem
                         .values
                         .toList()) {
-                      //getting user
+                      // Ürünün bilgisi
+                      DocumentSnapshot productDoc = await _firestore
+                          .collection('products')
+                          .doc(item.productId)
+                          .get();
+
+                      if (!productDoc.exists) {
+                        hasStockError = true;
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('${item.productName} bulunamadı.'),
+                        ));
+                        break;
+                      }
+
+                      int currentStock = productDoc.get('quantity');
+
+                      // tok kontrol
+                      if (item.quantity > currentStock) {
+                        hasStockError = true;
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              '${item.productName} için yeterli stok yok. Mevcut: $currentStock'),
+                        ));
+                        break;
+                      }
+                    }
+
+                    if (hasStockError) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      return;
+                    }
+
+                    //Stok varsa işlemi yap
+                    for (var item in ref
+                        .read(cartProvider.notifier)
+                        .getCartItem
+                        .values
+                        .toList()) {
                       DocumentSnapshot userDoc = await _firestore
                           .collection("buyers")
                           .doc(_auth.currentUser!.uid)
                           .get();
-                      CollectionReference orderRefer =
-                          _firestore.collection('orders');
-                      //Auto generate unique id
+
                       final orderId = Uuid().v4();
-                      await orderRefer.doc(orderId).set({
+
+                      await _firestore.collection('orders').doc(orderId).set({
                         'orderId': orderId,
                         'productName': item.productName,
                         'productId': item.productId,
@@ -406,20 +446,26 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         'delivered': false,
                         'processing': true,
                         'vendorId': item.vendorId,
-                      }).whenComplete(() {
-                        cartProviderData.clear();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('İşlem başarılı')));
-                        //Not stacked
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MainScreen()));
-                        setState(() {
-                          isLoading = false;
-                        });
+                      });
+
+                      //product güncelle
+                      await _firestore
+                          .collection('products')
+                          .doc(item.productId)
+                          .update({
+                        'quantity': FieldValue.increment(-item.quantity),
                       });
                     }
+
+                    cartProviderData.clear();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('İşlem başarılı')),
+                    );
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                    setState(() {
+                      isLoading = false;
+                    });
                   }
                 },
                 child: Container(
