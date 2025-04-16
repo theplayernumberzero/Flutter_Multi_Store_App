@@ -2,7 +2,7 @@ import 'package:app_web/views/side_bar_screens/buyers_screen.dart';
 import 'package:app_web/views/side_bar_screens/category_screen.dart';
 import 'package:app_web/views/side_bar_screens/is_popular_screen.dart';
 import 'package:app_web/views/side_bar_screens/orders_screen.dart';
-import 'package:app_web/views/side_bar_screens/products_screen.dart';
+import 'package:app_web/views/side_bar_screens/statistics_screen.dart';
 import 'package:app_web/views/side_bar_screens/upload_banner_screen.dart';
 import 'package:app_web/views/side_bar_screens/vendors_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,11 +41,6 @@ class _MainScreenState extends State<MainScreen> {
           _selectedScreen = OrdersScreen();
         });
         break;
-      case ProductsScreen.id:
-        setState(() {
-          _selectedScreen = ProductsScreen();
-        });
-        break;
       case UploadBannerScreen.id:
         setState(() {
           _selectedScreen = UploadBannerScreen();
@@ -54,6 +49,11 @@ class _MainScreenState extends State<MainScreen> {
       case IsPopularScreen.id:
         setState(() {
           _selectedScreen = IsPopularScreen();
+        });
+        break;
+      case StatisticsScreen.id:
+        setState(() {
+          _selectedScreen = StatisticsScreen();
         });
         break;
     }
@@ -132,14 +132,14 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icons.add,
           ),
           AdminMenuItem(
-            title: 'Products',
-            route: ProductsScreen.id,
-            icon: Icons.store,
-          ),
-          AdminMenuItem(
             title: 'Popular Products',
             route: IsPopularScreen.id,
             icon: CupertinoIcons.star,
+          ),
+          AdminMenuItem(
+            title: 'Staticstics',
+            route: StatisticsScreen.id,
+            icon: Icons.auto_graph,
           ),
         ],
         onSelected: (item) {

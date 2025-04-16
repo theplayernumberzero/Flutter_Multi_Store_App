@@ -1,5 +1,6 @@
 import 'package:app_web/firebase_options.dart';
 import 'package:app_web/views/authentication_screen/login_screen.dart';
+import 'package:app_web/views/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: LoginScreen(),
+      home: MainScreen(),
       builder: EasyLoading.init(),
     );
   }
