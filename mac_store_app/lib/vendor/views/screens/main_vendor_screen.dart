@@ -20,7 +20,7 @@ class _MainVendorScreenState extends State<MainVendorScreen> {
     UploadProductScreen(),
     VendorOrdersScreen(),
     EditProductScreen(),
-    VendorProfileScreen()
+    //VendorProfileScreen()
   ];
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class _MainVendorScreenState extends State<MainVendorScreen> {
             BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.cart), label: "Orders"),
             BottomNavigationBarItem(icon: Icon(Icons.edit), label: "Edit"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+            //BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           ]),
       body: _pages[pageIndex],
     );

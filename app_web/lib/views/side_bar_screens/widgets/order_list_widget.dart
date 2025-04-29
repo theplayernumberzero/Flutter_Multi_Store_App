@@ -49,12 +49,51 @@ class OrderListWidget extends StatelessWidget {
                   ),
                   1,
                 ),
+                FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('vendors')
+                      .where('uid', isEqualTo: orderData['vendorId'])
+                      .limit(1)
+                      .get()
+                      .then((querySnapshot) => querySnapshot.docs.first),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text(
+                        'Yükleniyor...',
+                        style: TextStyle(color: Colors.white),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text(
+                        'Hata oluştu',
+                        style: TextStyle(color: Colors.red),
+                      );
+                    } else if (!snapshot.hasData || !snapshot.data!.exists) {
+                      return Text(
+                        'Vendor bulunamadı',
+                        style: TextStyle(color: Colors.white),
+                      );
+                    }
+
+                    final vendorData =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    final vendorFullName =
+                        vendorData['fullname'] ?? 'Bilinmiyor';
+
+                    return orderDisplayData(
+                      Text(
+                        vendorFullName,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      2,
+                    );
+                  },
+                ),
                 orderDisplayData(
                   Text(
                     orderData['fullName'],
                     style: TextStyle(color: Colors.white),
                   ),
-                  3,
+                  2,
                 ),
                 orderDisplayData(
                   Text(
@@ -70,41 +109,31 @@ class OrderListWidget extends StatelessWidget {
                         style: TextStyle(fontSize: 16, color: Colors.white),
                         textAlign: TextAlign.center,
                       )
-                      : ElevatedButton(
-                        onPressed: () async {
-                          await FirebaseFirestore.instance
-                              .collection('orders')
-                              .doc(orderData['orderId'])
-                              .update({
-                                'delivered': true,
-                                'processing': false,
-                                'deliveredCount': FieldValue.increment(1),
-                              });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green, // Arka plan rengi
-                          foregroundColor: Colors.white, // Yazı rengi
-                        ),
-                        child: Text(
-                          "Mark Delivered",
-                          style: TextStyle(fontSize: 12),
-                        ),
+                      : Text(
+                        "Processing",
+                        style: TextStyle(color: Colors.amber),
                       ),
+                  2,
+                ),
+                orderDisplayData(
+                  Text(
+                    orderData['price'].toString() + " ₺",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   1,
                 ),
                 orderDisplayData(
-                  ElevatedButton(
-                    onPressed: () async {
-                      await FirebaseFirestore.instance
-                          .collection('orders')
-                          .doc(orderData['orderId'])
-                          .update({'delivered': false, 'processing': false});
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red, // Arka plan rengi
-                      foregroundColor: Colors.white, // Yazı rengi
-                    ),
-                    child: Text("Cancel"),
+                  Text(
+                    orderData['quantity'].toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  1,
+                ),
+                orderDisplayData(
+                  Text(
+                    (orderData['price'] * orderData['quantity']).toString() +
+                        " ₺",
+                    style: TextStyle(color: Colors.white),
                   ),
                   1,
                 ),

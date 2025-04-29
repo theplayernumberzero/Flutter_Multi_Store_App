@@ -46,10 +46,13 @@ class OrdersScreen extends StatelessWidget {
           Row(
             children: [
               rowHeader(1, 'Image'),
-              rowHeader(3, 'Full Name'),
+              rowHeader(2, 'Vendor Name'),
+              rowHeader(2, 'Buyer Name'),
               rowHeader(2, 'Address'),
-              rowHeader(1, 'Approve'),
-              rowHeader(1, 'Reject'),
+              rowHeader(2, 'Is Delivered'),
+              rowHeader(1, 'Price'),
+              rowHeader(1, 'Quantity'),
+              rowHeader(1, 'Total'),
             ],
           ),
           OrderListWidget(),

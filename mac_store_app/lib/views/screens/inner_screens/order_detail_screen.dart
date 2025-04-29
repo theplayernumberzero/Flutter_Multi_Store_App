@@ -165,7 +165,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                       height: 2,
                                     ),
                                     Text(
-                                      "\$${widget.orderData['price']}",
+                                      "\$${widget.orderData['price'] * widget.orderData['quantity']}",
                                       style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 16,

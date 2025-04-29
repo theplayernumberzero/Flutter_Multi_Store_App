@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,11 +22,24 @@ class AccountScreen extends ConsumerStatefulWidget {
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  //create storage instance for uploading pp to firebase storage
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   String fullname = "";
   String state = "";
   String city = "";
   String profileImage = "";
+
+  uploadProfileImageToStorage(Uint8List? image) async {
+    Reference ref = _firebaseStorage
+        .ref()
+        .child('buyersProfilePictures')
+        .child(_firebaseAuth.currentUser!.uid);
+    UploadTask uploadTask = ref.putData(image!);
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
 
   void _setUpUserDataStream() {
     //create a stream of user data (DocumentSnapshot used for only one document)

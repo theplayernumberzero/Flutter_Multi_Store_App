@@ -240,12 +240,36 @@ class VendorOrdersScreen extends StatelessWidget {
                                             SizedBox(
                                               height: 2,
                                             ),
-                                            Text(
-                                              "\$${orderData['price']}",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16,
-                                              ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "\$${orderData['price']}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 12,
+                                                ),
+                                                Text(
+                                                  "x ${orderData['quantity']}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 24,
+                                                ),
+                                                Text(
+                                                  "Total: ${orderData['price'] * orderData['quantity']}\$",
+                                                  style: TextStyle(
+                                                    color: Colors.blue,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
@@ -289,36 +313,40 @@ class VendorOrdersScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Positioned(
-                              top: 115,
-                              left: 298,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Positioned(
-                                      top: 0,
-                                      left: 0,
-                                      //burayı vendor kısmına ekleyip kullanıcıdan çekeceğim (delivered true olunca kullanıcı order silemez)
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          await _firestore
-                                              .collection('orders')
-                                              .doc(orderData['orderId'])
-                                              .delete();
-                                        },
-                                        child: Image.asset(
-                                          'assets/icons/delete.png',
-                                          width: 20,
-                                          height: 20,
+                            Visibility(
+                              visible:
+                                  orderData['delivered'] == true ? false : true,
+                              child: Positioned(
+                                top: 115,
+                                left: 298,
+                                child: Container(
+                                  width: 20,
+                                  height: 20,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        //burayı vendor kısmına ekleyip kullanıcıdan çekeceğim (delivered true olunca kullanıcı order silemez)
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            await _firestore
+                                                .collection('orders')
+                                                .doc(orderData['orderId'])
+                                                .delete();
+                                          },
+                                          child: Image.asset(
+                                            'assets/icons/delete.png',
+                                            width: 20,
+                                            height: 20,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

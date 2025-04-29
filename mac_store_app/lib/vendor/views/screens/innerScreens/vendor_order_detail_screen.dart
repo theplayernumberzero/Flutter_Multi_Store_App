@@ -163,12 +163,36 @@ class _VendorOrderDetailScreenState extends State<VendorOrderDetailScreen> {
                                     SizedBox(
                                       height: 2,
                                     ),
-                                    Text(
-                                      "\$${widget.orderData['price']}",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "\$${widget.orderData['price']}",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 12,
+                                        ),
+                                        Text(
+                                          "x ${widget.orderData['quantity']}",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 24,
+                                        ),
+                                        Text(
+                                          "Total: ${widget.orderData['price'] * widget.orderData['quantity']}\$",
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

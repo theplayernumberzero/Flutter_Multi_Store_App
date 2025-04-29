@@ -241,7 +241,7 @@ class OrderScreen extends StatelessWidget {
                                               height: 2,
                                             ),
                                             Text(
-                                              "\$${orderData['price']}",
+                                              "\$${orderData['price'] * orderData['quantity']}",
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 16,
