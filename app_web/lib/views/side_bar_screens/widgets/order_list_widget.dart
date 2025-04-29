@@ -117,7 +117,7 @@ class OrderListWidget extends StatelessWidget {
                 ),
                 orderDisplayData(
                   Text(
-                    orderData['price'].toString() + " ₺",
+                    orderData['price'].toString() + " \$",
                     style: TextStyle(color: Colors.white),
                   ),
                   1,
@@ -132,7 +132,7 @@ class OrderListWidget extends StatelessWidget {
                 orderDisplayData(
                   Text(
                     (orderData['price'] * orderData['quantity']).toString() +
-                        " ₺",
+                        " \$",
                     style: TextStyle(color: Colors.white),
                   ),
                   1,

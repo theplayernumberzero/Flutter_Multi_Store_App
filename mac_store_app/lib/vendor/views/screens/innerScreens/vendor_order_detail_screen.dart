@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/vendor_orders_screen.dart';
+import 'package:mac_store_app/vendor/views/screens/main_vendor_screen.dart';
 
 class VendorOrderDetailScreen extends StatefulWidget {
   //access all values of clicked data
@@ -311,6 +313,12 @@ class _VendorOrderDetailScreenState extends State<VendorOrderDetailScreen> {
                                     'processing': false,
                                     'deliveredCount': FieldValue.increment(1),
                                   });
+                                  //stackten sil
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MainVendorScreen()));
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
