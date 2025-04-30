@@ -39,7 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
 
-      String res = await _authController.loginUser(email, password);
+      String res =
+          await _authController.loginUser(email.trim(), password.trim());
+      print(res);
+      print("login user çalıştı");
       if (res == 'buyer_success') {
         //go to main screen
         Future.delayed(Duration.zero, () {
@@ -54,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         print("Logged in");
       } else {
+        print("Buradayım");
         print(res);
         setState(() {
           _isLoading = false;

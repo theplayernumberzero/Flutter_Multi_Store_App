@@ -260,7 +260,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: GoogleFonts.lato(fontSize: 16),
                         ),
                         Text(
-                          "İstanbul",
+                          widget.orderData['city'],
                           style: GoogleFonts.lato(fontSize: 16),
                         ),
                         SizedBox(

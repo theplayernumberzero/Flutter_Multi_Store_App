@@ -50,6 +50,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     //Listen stream and make changes in app if there is changes in data
     userDataStream.listen((DocumentSnapshot userData) {
       if (userData.exists) {
+        if (!mounted) return;
         setState(() {
           fullname = userData.get('fullname');
           state = userData.get('state');
@@ -64,7 +65,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _setUpUserDataStream();
+    Future.microtask(_setUpUserDataStream);
   }
 
   @override

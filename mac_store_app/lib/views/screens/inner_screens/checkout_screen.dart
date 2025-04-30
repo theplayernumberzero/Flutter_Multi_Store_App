@@ -444,6 +444,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         'buyerId': _auth.currentUser!.uid,
                         'deliveredCount': 0,
                         'delivered': false,
+                        'city':
+                            (userDoc.data() as Map<String, dynamic>)['city'],
                         'processing': true,
                         'vendorId': item.vendorId,
                       });

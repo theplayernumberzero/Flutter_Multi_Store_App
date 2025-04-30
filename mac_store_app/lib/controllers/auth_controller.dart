@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -29,6 +30,8 @@ class AuthController {
         'city': '',
         'state': '',
       });
+
+      _auth.signOut();
 
       res = 'Success';
     } on FirebaseAuthException catch (e) {
@@ -63,7 +66,7 @@ class AuthController {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         res = 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
+      } else if (e.code == 'invalid-credential') {
         res = 'Wrong password provided for that user.';
       }
     } catch (e) {
