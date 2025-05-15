@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/popular_item_widget.dart';
 
 class InnerVendorProductScreen extends StatefulWidget {
@@ -12,12 +13,37 @@ class InnerVendorProductScreen extends StatefulWidget {
 }
 
 class _InnerVendorProductScreenState extends State<InnerVendorProductScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String searchQuery = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        searchQuery = query.toLowerCase();
+      });
+    });
+  }
+
+  Stream<QuerySnapshot> _getProductStream() {
+    // Önce sadece vendorId'ye göre filtrele
+    Query query = FirebaseFirestore.instance
+        .collection('products')
+        .where('vendorId', isEqualTo: widget.vendorId);
+
+    return query.snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> _productStream = FirebaseFirestore.instance
-        .collection('products')
-        .where('vendorId', isEqualTo: widget.vendorId)
-        .snapshots();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -25,38 +51,88 @@ class _InnerVendorProductScreenState extends State<InnerVendorProductScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _productStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search products...',
+                prefixIcon: Icon(Icons.search),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onChanged: _onSearchChanged,
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _getProductStream(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "Bu satıcıya ait ürün bulunmamaktadır",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
 
-          if (snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Text("No product under this vendor"),
-            );
-          }
+                // Arama filtrelemesi
+                var filteredDocs = snapshot.data!.docs;
+                if (searchQuery.isNotEmpty) {
+                  filteredDocs = filteredDocs.where((doc) {
+                    String productName =
+                        doc['productName'].toString().toLowerCase();
+                    return productName.contains(searchQuery);
+                  }).toList();
+                }
 
-          return GridView.count(
-            physics: ScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 3,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: 300 / 500,
-            children: List.generate(snapshot.data!.size, (index) {
-              final productData = snapshot.data!.docs[index];
-              return PopularItem(productData: productData);
-            }),
-          );
-        },
+                if (filteredDocs.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "Aradığınız ürün bulunamadı",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
+
+                return GridView.count(
+                  padding: EdgeInsets.all(16),
+                  physics: AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 300 / 500,
+                  children: filteredDocs.map((doc) {
+                    return PopularItem(productData: doc);
+                  }).toList(),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

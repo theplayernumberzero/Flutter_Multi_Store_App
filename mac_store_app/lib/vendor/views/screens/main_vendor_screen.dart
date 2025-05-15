@@ -4,7 +4,6 @@ import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/earnings_
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/edit_product_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/upload_product_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/vendor_orders_screen.dart';
-import 'package:mac_store_app/vendor/views/screens/bottomNavigationBar/vendor_profile_screen.dart';
 
 class MainVendorScreen extends StatefulWidget {
   const MainVendorScreen({super.key});

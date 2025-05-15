@@ -5,10 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:mac_store_app/controllers/category_controller.dart';
 import 'package:mac_store_app/firebase_options.dart';
-import 'package:mac_store_app/vendor/views/auth/vendor_login_screen.dart';
-import 'package:mac_store_app/vendor/views/screens/main_vendor_screen.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/login_screen.dart';
-import 'package:mac_store_app/views/screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
