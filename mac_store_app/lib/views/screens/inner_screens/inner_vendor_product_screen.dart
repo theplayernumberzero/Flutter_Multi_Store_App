@@ -16,6 +16,8 @@ class _InnerVendorProductScreenState extends State<InnerVendorProductScreen> {
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = '';
   Timer? _debounce;
+  String? selectedSortOption;
+  String? appliedSortOption;
 
   @override
   void dispose() {
@@ -34,12 +36,56 @@ class _InnerVendorProductScreenState extends State<InnerVendorProductScreen> {
   }
 
   Stream<QuerySnapshot> _getProductStream() {
-    // Önce sadece vendorId'ye göre filtrele
-    Query query = FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('products')
-        .where('vendorId', isEqualTo: widget.vendorId);
+        .where('vendorId', isEqualTo: widget.vendorId)
+        .snapshots();
+  }
 
-    return query.snapshots();
+  void _applyFilter() {
+    setState(() {
+      appliedSortOption = selectedSortOption;
+    });
+  }
+
+  void _clearFilters() {
+    setState(() {
+      selectedSortOption = null;
+      appliedSortOption = null;
+    });
+  }
+
+  List<QueryDocumentSnapshot> _sortProducts(
+      List<QueryDocumentSnapshot> products) {
+    switch (appliedSortOption) {
+      case 'price_asc':
+        products.sort((a, b) {
+          double priceA =
+              a['productPrice'] - (a['productPrice'] * a['discount'] / 100);
+          double priceB =
+              b['productPrice'] - (b['productPrice'] * b['discount'] / 100);
+          return priceA.compareTo(priceB);
+        });
+        break;
+      case 'price_desc':
+        products.sort((a, b) {
+          double priceA =
+              a['productPrice'] - (a['productPrice'] * a['discount'] / 100);
+          double priceB =
+              b['productPrice'] - (b['productPrice'] * b['discount'] / 100);
+          return priceB.compareTo(priceA);
+        });
+        break;
+      case 'discount_asc':
+        products.sort(
+            (a, b) => (a['discount'] as num).compareTo(b['discount'] as num));
+        break;
+      case 'discount_desc':
+        products.sort(
+            (a, b) => (b['discount'] as num).compareTo(a['discount'] as num));
+        break;
+    }
+    return products;
   }
 
   @override
@@ -51,88 +97,152 @@ class _InnerVendorProductScreenState extends State<InnerVendorProductScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search products...',
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search products...',
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  searchQuery = '';
+                                });
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onChanged: _onSearchChanged,
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: selectedSortOption,
+                            hint: Text('Sıralama seçin'),
+                            underline: SizedBox(),
+                            items: [
+                              DropdownMenuItem(
+                                value: 'price_asc',
+                                child: Text('Satış fiyatı artana göre sırala'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'price_desc',
+                                child: Text('Satış fiyatı azalana göre sırala'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'discount_asc',
+                                child: Text('İndirim oranı artana göre sırala'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'discount_desc',
+                                child:
+                                    Text('İndirim oranı azalana göre sırala'),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                selectedSortOption = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: _applyFilter,
+                        child: Text('Filtrele'),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: _clearFilters,
+                        child: Text('Clear'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              onChanged: _onSearchChanged,
             ),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _getProductStream(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _getProductStream(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "Bu satıcıya ait ürün bulunmamaktadır",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    );
+                  }
+
+                  var filteredDocs = snapshot.data!.docs;
+
+                  // Arama filtrelemesi
+                  if (searchQuery.isNotEmpty) {
+                    filteredDocs = filteredDocs.where((doc) {
+                      String productName =
+                          doc['productName'].toString().toLowerCase();
+                      return productName.contains(searchQuery);
+                    }).toList();
+                  }
+
+                  // Sıralama
+                  if (appliedSortOption != null) {
+                    filteredDocs = _sortProducts(filteredDocs);
+                  }
+
+                  if (filteredDocs.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "Aradığınız ürün bulunamadı",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    );
+                  }
+
+                  return GridView.count(
+                    padding: EdgeInsets.all(16),
+                    physics: AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 300 / 500,
+                    children: filteredDocs.map((doc) {
+                      return PopularItem(productData: doc);
+                    }).toList(),
                   );
-                }
-
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "Bu satıcıya ait ürün bulunmamaktadır",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  );
-                }
-
-                // Arama filtrelemesi
-                var filteredDocs = snapshot.data!.docs;
-                if (searchQuery.isNotEmpty) {
-                  filteredDocs = filteredDocs.where((doc) {
-                    String productName =
-                        doc['productName'].toString().toLowerCase();
-                    return productName.contains(searchQuery);
-                  }).toList();
-                }
-
-                if (filteredDocs.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "Aradığınız ürün bulunamadı",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  );
-                }
-
-                return GridView.count(
-                  padding: EdgeInsets.all(16),
-                  physics: AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 300 / 500,
-                  children: filteredDocs.map((doc) {
-                    return PopularItem(productData: doc);
-                  }).toList(),
-                );
-              },
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

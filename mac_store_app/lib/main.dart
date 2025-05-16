@@ -21,17 +21,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    return GetMaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: LoginScreen(),
-        //Dependecy injection
-        initialBinding: BindingsBuilder(() {
-          Get.put<CategoryController>(CategoryController());
-        }));
+    return SafeArea(
+      child: GetMaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: LoginScreen(),
+          //Dependecy injection
+          initialBinding: BindingsBuilder(() {
+            Get.put<CategoryController>(CategoryController());
+          })),
+    );
   }
 }
