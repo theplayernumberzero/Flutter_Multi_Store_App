@@ -26,7 +26,7 @@ class AdminAuthController {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         res = 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
+      } else if (e.code == 'invalid-credential') {
         res = 'Wrong password provided for that user.';
       }
     } catch (e) {
