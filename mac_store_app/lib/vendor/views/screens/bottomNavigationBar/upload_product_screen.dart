@@ -107,6 +107,12 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
         'description': description,
         'discount': discount,
         'quantity': quantity,
+        'productPrices': [
+          {
+            'time': Timestamp.now(),
+            'price': (productPrice! - (productPrice! * discount! / 100))
+          }
+        ],
         'productImage': imageUrlList,
         'vendorId': FirebaseAuth.instance.currentUser!.uid,
         'storeName': (vendorDoc.data() as Map<String, dynamic>)['fullname'],

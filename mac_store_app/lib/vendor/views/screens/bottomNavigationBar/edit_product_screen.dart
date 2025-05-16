@@ -64,7 +64,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             child: Stack(
               children: [
                 Positioned(
-                  left: 280,
+                  left: 260,
                   top: 52,
                   child: Stack(
                     children: [

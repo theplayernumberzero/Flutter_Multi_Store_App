@@ -84,6 +84,15 @@ class _EditProductDetailScreenState extends State<EditProductDetailScreen> {
         'discount': int.tryParse(_discountController.text) ?? 0,
         'quantity': int.tryParse(_quantityController.text) ?? 1,
         'description': _descriptionController.text,
+        'productPrices': FieldValue.arrayUnion([
+          {
+            'time': Timestamp.now(),
+            'price': ((double.tryParse(_priceController.text) ?? 0.0) -
+                ((double.tryParse(_priceController.text) ?? 0.0) *
+                    (int.tryParse(_discountController.text) ?? 0) /
+                    100)),
+          }
+        ])
       });
 
       //Bu widget hâlâ aktif mi? Eğer değilse hiçbir şey yapma, çünkü kullanıcı bu sayfadan çıkmış olabilir.
