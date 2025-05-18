@@ -11,6 +11,7 @@ import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/provider/favorite_provider.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/login_screen.dart';
 import 'package:mac_store_app/views/screens/inner_screens/order_screen.dart';
+import 'package:mac_store_app/views/screens/inner_screens/user_comments_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({Key? key});
@@ -396,9 +397,17 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               height: 10,
             ),
             ListTile(
-              leading: Image.asset('assets/icons/help.png'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserCommentsScreen(),
+                  ),
+                );
+              },
+              leading: Image.asset('assets/icons/history.png'),
               title: Text(
-                'Help ',
+                'My Comments',
                 style: GoogleFonts.lato(
                   fontWeight: FontWeight.bold,
                 ),
