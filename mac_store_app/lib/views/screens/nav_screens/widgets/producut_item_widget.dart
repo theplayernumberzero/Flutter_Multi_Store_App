@@ -172,7 +172,8 @@ class ProducutItemWidget extends StatelessWidget {
                 child: Text(
                   productData['rating'] == 0
                       ? ""
-                      : productData['rating'].toString(),
+                      : (productData['rating'] / productData['totalReviews'])
+                          .toString(),
                   style: GoogleFonts.lato(color: Colors.blueGrey, fontSize: 12),
                 ),
               ),
