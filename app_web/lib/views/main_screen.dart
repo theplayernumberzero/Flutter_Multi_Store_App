@@ -2,6 +2,7 @@ import 'package:app_web/views/side_bar_screens/buyers_screen.dart';
 import 'package:app_web/views/side_bar_screens/category_screen.dart';
 import 'package:app_web/views/side_bar_screens/is_popular_screen.dart';
 import 'package:app_web/views/side_bar_screens/orders_screen.dart';
+import 'package:app_web/views/side_bar_screens/price_history_screen.dart';
 import 'package:app_web/views/side_bar_screens/statistics_screen.dart';
 import 'package:app_web/views/side_bar_screens/upload_banner_screen.dart';
 import 'package:app_web/views/side_bar_screens/vendors_screen.dart';
@@ -39,6 +40,11 @@ class _MainScreenState extends State<MainScreen> {
       case OrdersScreen.id:
         setState(() {
           _selectedScreen = OrdersScreen();
+        });
+        break;
+      case PriceHistoryScreen.id:
+        setState(() {
+          _selectedScreen = PriceHistoryScreen();
         });
         break;
       case UploadBannerScreen.id:
@@ -125,6 +131,11 @@ class _MainScreenState extends State<MainScreen> {
             title: 'Categories',
             route: CategoryScreen.id,
             icon: Icons.category,
+          ),
+          AdminMenuItem(
+            title: 'Price History',
+            route: PriceHistoryScreen.id,
+            icon: Icons.price_change,
           ),
           AdminMenuItem(
             title: 'Upload Banner',
