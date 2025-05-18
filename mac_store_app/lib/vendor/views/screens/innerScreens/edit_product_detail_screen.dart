@@ -59,7 +59,6 @@ class _EditProductDetailScreenState extends State<EditProductDetailScreen> {
         content: Text(
             "${_nameController.text} ürününü güncellemek istediğinize emin misiniz?"),
         actions: [
-          //ctx context objesi
           TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
               child: Text("Hayır")),
@@ -84,27 +83,15 @@ class _EditProductDetailScreenState extends State<EditProductDetailScreen> {
         'discount': int.tryParse(_discountController.text) ?? 0,
         'quantity': int.tryParse(_quantityController.text) ?? 1,
         'description': _descriptionController.text,
-        'productPrices': FieldValue.arrayUnion([
-          {
-            'time': Timestamp.now(),
-            'price': ((double.tryParse(_priceController.text) ?? 0.0) -
-                ((double.tryParse(_priceController.text) ?? 0.0) *
-                    (int.tryParse(_discountController.text) ?? 0) /
-                    100)),
-          }
-        ])
       });
 
-      //Bu widget hâlâ aktif mi? Eğer değilse hiçbir şey yapma, çünkü kullanıcı bu sayfadan çıkmış olabilir.
       if (!mounted) return;
 
-      // 👇 Route kullanmadan, doğrudan HomePage'e dön
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => MainVendorScreen()),
         (route) => false,
       );
 
-      // ScaffoldMessenger için context'i biraz geciktiriyoruz
       Future.delayed(Duration(milliseconds: 300), () {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Ürün güncellendi')),
@@ -122,47 +109,127 @@ class _EditProductDetailScreenState extends State<EditProductDetailScreen> {
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-            child: Column(children: [
-              buildTextField(_nameController, 'Product Name'),
-              SizedBox(height: 16),
-              buildTextField(_priceController, 'Price',
-                  keyboardType: TextInputType.number),
-              SizedBox(height: 16),
-              buildTextField(_discountController, 'Discount',
-                  keyboardType: TextInputType.number),
-              SizedBox(height: 16),
-              buildTextField(_quantityController, 'Quantity',
-                  keyboardType: TextInputType.number),
-              SizedBox(height: 16),
-              buildTextField(_descriptionController, 'Description',
-                  maxLines: 4),
-              SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _updateProduct,
-                child: _isLoading
-                    ? CircularProgressIndicator(color: Colors.white)
-                    : Text("Update Product"),
-              ),
-            ]),
+            child: Column(
+              children: [
+                buildTextField(
+                  _nameController,
+                  'Product Name',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Product name is required';
+                    } else if (value.length < 1) {
+                      return 'Product name must be at least 1 character';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                buildTextField(
+                  _priceController,
+                  'Price',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Price is required';
+                    }
+                    final price = double.tryParse(value);
+                    if (price == null) {
+                      return 'Please enter a valid price';
+                    }
+                    if (price < 1) {
+                      return 'Price must be at least 1';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                buildTextField(
+                  _discountController,
+                  'Discount',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Discount is required';
+                    }
+                    final discount = int.tryParse(value);
+                    if (discount == null) {
+                      return 'Please enter a valid number';
+                    }
+                    if (discount < 0 || discount > 100) {
+                      return 'Discount must be between 0 and 100';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                buildTextField(
+                  _quantityController,
+                  'Quantity',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Quantity is required';
+                    }
+                    final quantity = int.tryParse(value);
+                    if (quantity == null) {
+                      return 'Please enter a valid number';
+                    }
+                    if (quantity < 1) {
+                      return 'Quantity must be at least 1';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                buildTextField(
+                  _descriptionController,
+                  'Description',
+                  maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Description is required';
+                    } else if (value.length < 1) {
+                      return 'Description must be at least 1 character';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _updateProduct,
+                  child: _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text("Update Product"),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget buildTextField(TextEditingController controller, String labelText,
-      {TextInputType keyboardType = TextInputType.text, int maxLines = 1}) {
+  Widget buildTextField(
+    TextEditingController controller,
+    String labelText, {
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+    String? Function(String?)? validator,
+  }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Lütfen $labelText girin' : null,
+      validator: validator,
       decoration: InputDecoration(
         labelText: labelText,
         filled: true,
         fillColor: Colors.grey.shade300,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.red),
+        ),
       ),
     );
   }

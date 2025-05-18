@@ -47,14 +47,26 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   chooseImage() async {
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    try {
+      final pickedFile = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024, // Resim genişliğini sınırla
+        maxHeight: 1024, // Resim yüksekliğini sınırla
+        imageQuality: 70, // Resim kalitesini düşür (0-100 arası)
+      );
 
-    if (pickedFile == null) {
-      print("There is no image selected");
-    } else {
+      if (pickedFile == null) {
+        print("No image selected");
+        return;
+      }
+
       setState(() {
         images.add(File(pickedFile.path));
       });
+    } catch (e) {
+      print('Error picking image: $e');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error selecting image')));
     }
   }
 
@@ -72,62 +84,125 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
 
   //Upload product images to storage
   uploadProductImagesToStorage() async {
-    for (var image in images) {
-      Reference ref =
-          _firebaseStorage.ref().child('productImages').child(Uuid().v4());
-      await ref.putFile(image).whenComplete(() async {
-        await ref.getDownloadURL().then((value) {
-          setState(() {
-            imageUrlList.add(value);
-          });
+    try {
+      if (images.isEmpty) {
+        throw Exception('Please select at least one image');
+      }
+
+      for (var image in images) {
+        // Benzersiz bir dosya adı oluştur
+        String fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+        // Storage referansını oluştur
+        Reference ref =
+            _firebaseStorage.ref().child('productImages').child(fileName);
+
+        // Dosya boyutunu kontrol et ve gerekirse sıkıştır
+        final File compressedFile = File(image.path);
+
+        // Upload task oluştur
+        final UploadTask uploadTask = ref.putFile(
+          compressedFile,
+          SettableMetadata(
+              contentType: 'image/jpeg',
+              customMetadata: {'picked-file-path': image.path}),
+        );
+
+        // Upload durumunu takip et
+        uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+          print(
+              'Progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100} %');
         });
-      });
+
+        // Upload'ı tamamla
+        final TaskSnapshot taskSnapshot =
+            await uploadTask.whenComplete(() => null);
+        final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+        setState(() {
+          imageUrlList.add(downloadUrl);
+        });
+      }
+    } on FirebaseException catch (e) {
+      print('Firebase error: ${e.code} - ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading image: ${e.message}')));
+      throw e;
+    } catch (e) {
+      print('Error uploading images: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An error occurred while uploading images')));
+      throw e;
     }
   }
 
   //Upolad products to cloud function
   uploadData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    //document name will be user uid
-    DocumentSnapshot vendorDoc = await _firestore
-        .collection('vendors')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    await uploadProductImagesToStorage();
-    if (imageUrlList.isNotEmpty) {
-      final productId = Uuid().v4();
-      await _firestore.collection('products').doc(productId).set({
-        'productId': productId,
-        'productName': productName,
-        'productPrice': productPrice,
-        'productSize': _sizeList,
-        'category': selectedCategory,
-        'description': description,
-        'discount': discount,
-        'quantity': quantity,
-        'productPrices': [
-          {
-            'time': Timestamp.now(),
-            'price': (productPrice! - (productPrice! * discount! / 100))
-          }
-        ],
-        'productImage': imageUrlList,
-        'vendorId': FirebaseAuth.instance.currentUser!.uid,
-        'storeName': (vendorDoc.data() as Map<String, dynamic>)['fullname'],
-        'rating': 0,
-        'totalReviews': 0,
-        'isPopular': false,
-      }).whenComplete(() {
+    try {
+      if (images.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please select at least one image')));
+        return;
+      }
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Vendor bilgisini al
+      DocumentSnapshot vendorDoc = await _firestore
+          .collection('vendors')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+
+      // Resimleri yükle
+      await uploadProductImagesToStorage();
+
+      if (imageUrlList.isNotEmpty) {
+        final productId = Uuid().v4();
+        await _firestore.collection('products').doc(productId).set({
+          'productId': productId,
+          'productName': productName,
+          'productPrice': productPrice,
+          'productSize': _sizeList,
+          'category': selectedCategory,
+          'description': description,
+          'discount': discount,
+          'quantity': quantity,
+          'productPrices': [
+            {
+              'time': Timestamp.now(),
+              'price': (productPrice! - (productPrice! * discount! / 100))
+            }
+          ],
+          'productImage': imageUrlList,
+          'vendorId': FirebaseAuth.instance.currentUser!.uid,
+          'storeName': (vendorDoc.data() as Map<String, dynamic>)['fullname'],
+          'rating': 0,
+          'totalReviews': 0,
+          'isPopular': false,
+        });
+
+        // Başarılı mesajı göster
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Product uploaded successfully')));
+
+        // Form ve state'i temizle
         setState(() {
-          //Clear datas after update
           _isLoading = false;
           _formKey.currentState!.reset();
           imageUrlList.clear();
           images.clear();
         });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading product: ${e.toString()}')));
+      print('Error in uploadData: $e');
     }
   }
 
@@ -182,10 +257,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Enter product name";
-                        } else {
-                          return null;
+                          return "Product name is required";
+                        } else if (value.length < 1) {
+                          return "Product name must be at least 1 character";
                         }
+                        return null;
                       },
                       decoration: InputDecoration(
                         labelText: 'Enter Product Name',
@@ -194,6 +270,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red),
                         ),
                       ),
                     ),
@@ -207,16 +287,21 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                   double.tryParse(value) != null) {
                                 productPrice = double.parse(value);
                               } else {
-                                //sayı yanlış girilirse ne olacak
                                 productPrice = 0.0;
                               }
                             },
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return "Enter price";
-                              } else {
-                                return null;
+                                return "Price is required";
                               }
+                              final price = double.tryParse(value);
+                              if (price == null) {
+                                return "Please enter a valid price";
+                              }
+                              if (price < 1) {
+                                return "Price must be at least 1";
+                              }
+                              return null;
                             },
                             decoration: InputDecoration(
                               labelText: 'Enter Price',
@@ -225,6 +310,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide.none,
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Colors.red),
                               ),
                             ),
                           ),
@@ -240,16 +329,21 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                         if (value.isNotEmpty && int.tryParse(value) != null) {
                           discount = int.parse(value);
                         } else {
-                          //sayı yanlış girilirse ne olacak
                           discount = 0;
                         }
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Enter discount";
-                        } else {
-                          return null;
+                          return "Discount is required";
                         }
+                        final discountValue = int.tryParse(value);
+                        if (discountValue == null) {
+                          return "Please enter a valid number";
+                        }
+                        if (discountValue < 0 || discountValue > 100) {
+                          return "Discount must be between 0 and 100";
+                        }
+                        return null;
                       },
                       decoration: InputDecoration(
                         labelText: 'Discount',
@@ -259,6 +353,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
@@ -267,16 +365,21 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                         if (value.isNotEmpty && int.tryParse(value) != null) {
                           quantity = int.parse(value);
                         } else {
-                          //sayı yanlış girilirse ne olacak
                           quantity = 1;
                         }
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Enter quantity";
-                        } else {
-                          return null;
+                          return "Quantity is required";
                         }
+                        final quantityValue = int.tryParse(value);
+                        if (quantityValue == null) {
+                          return "Please enter a valid number";
+                        }
+                        if (quantityValue < 1) {
+                          return "Quantity must be at least 1";
+                        }
+                        return null;
                       },
                       decoration: InputDecoration(
                         labelText: 'Quantity',
@@ -285,6 +388,10 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red),
                         ),
                       ),
                     ),
@@ -297,10 +404,11 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                       maxLines: 4,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Enter description";
-                        } else {
-                          return null;
+                          return "Description is required";
+                        } else if (value.length < 1) {
+                          return "Description must be at least 1 character";
                         }
+                        return null;
                       },
                       decoration: InputDecoration(
                         labelText: 'Enter Description',
@@ -310,10 +418,13 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
-                    //on add size if you click size etiket it will be removed
                     Row(
                       children: [
                         Visibility(
@@ -382,7 +493,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                 scrollDirection: Axis.horizontal,
                                 itemCount: _sizeList.length,
                                 itemBuilder: (context, index) {
-                                  //Tıklandığı zaman listten çıkarılacak
                                   return GestureDetector(
                                     onTap: () {
                                       setState(() {
@@ -423,7 +533,6 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    //first form validation
                     if (_formKey.currentState!.validate()) {
                       uploadData();
                     }
@@ -467,7 +576,17 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.red),
+        ),
       ),
+      validator: (value) {
+        if (value == null) {
+          return "Please select a category";
+        }
+        return null;
+      },
       items: _categoryList.map((value) {
         return DropdownMenuItem(value: value, child: Text(value));
       }).toList(),
