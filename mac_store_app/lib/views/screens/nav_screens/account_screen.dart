@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/provider/favorite_provider.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/login_screen.dart';
+import 'package:mac_store_app/views/screens/inner_screens/edit_buyer_profile_screen.dart';
 import 'package:mac_store_app/views/screens/inner_screens/order_screen.dart';
 import 'package:mac_store_app/views/screens/inner_screens/user_comments_screen.dart';
 
@@ -104,18 +105,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                               'https://cdn.pixabay.com/photo/2014/04/03/10/32/businessman-310819_1280.png',
                             ),
                           )),
-                      Align(
-                        alignment: Alignment(0.23, -0.61),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Image.asset(
-                            'assets/icons/edit.png',
-                            width: 19,
-                            height: 19,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
+                      // Align(
+                      //   alignment: Alignment(0.23, -0.61),
+                      //   child: InkWell(
+                      //     onTap: () {},
+                      //     child: Image.asset(
+                      //       'assets/icons/edit.png',
+                      //       width: 19,
+                      //       height: 19,
+                      //       fit: BoxFit.cover,
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                   Align(
@@ -408,6 +409,32 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               leading: Image.asset('assets/icons/history.png'),
               title: Text(
                 'My Comments',
+                style: GoogleFonts.lato(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditBuyerProfileScreen(),
+                  ),
+                );
+              },
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Icon(
+                  Icons.edit,
+                  size: 35,
+                ),
+              ),
+              title: Text(
+                'Edit Profile',
                 style: GoogleFonts.lato(
                   fontWeight: FontWeight.bold,
                 ),

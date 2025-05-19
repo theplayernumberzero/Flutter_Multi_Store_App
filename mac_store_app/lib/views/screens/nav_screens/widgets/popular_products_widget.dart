@@ -25,13 +25,18 @@ class PopularProductsWidget extends StatelessWidget {
           );
         }
 
+        var products = snapshot.data!.docs;
+        if (products.toList().length >= 5) {
+          products = products.take(5).toList();
+        } else {}
+
         return SizedBox(
           height: 250,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.docs.length,
+              itemCount: products.length,
               itemBuilder: (context, index) {
-                final productData = snapshot.data!.docs[index];
+                final productData = products[index];
                 return ProducutItemWidget(
                   productData: productData,
                 );
