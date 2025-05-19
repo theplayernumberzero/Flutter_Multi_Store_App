@@ -231,7 +231,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   Text(
                     widget.productData['productName'],
                     style: GoogleFonts.roboto(
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1,
                       color: Colors.deepPurpleAccent,
@@ -266,6 +266,19 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   )
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "Vendor Name: " + widget.productData['storeName'],
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 4,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

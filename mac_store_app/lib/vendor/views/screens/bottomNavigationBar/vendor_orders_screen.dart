@@ -332,11 +332,28 @@ class VendorOrdersScreen extends StatelessWidget {
                                         left: 0,
                                         //burayı vendor kısmına ekleyip kullanıcıdan çekeceğim (delivered true olunca kullanıcı order silemez)
                                         child: GestureDetector(
+                                          // Positioned widget içindeki GestureDetector'da onTap kısmını güncelle
                                           onTap: () async {
-                                            await _firestore
-                                                .collection('orders')
-                                                .doc(orderData['orderId'])
-                                                .delete();
+                                            try {
+                                              // Önce ürün stokunu güncelle
+                                              await _firestore
+                                                  .collection('products')
+                                                  .doc(orderData['productId'])
+                                                  .update({
+                                                'quantity':
+                                                    FieldValue.increment(
+                                                        orderData['quantity']),
+                                              });
+
+                                              // Sonra siparişi sil
+                                              await _firestore
+                                                  .collection('orders')
+                                                  .doc(orderData['orderId'])
+                                                  .delete();
+                                            } catch (e) {
+                                              print(
+                                                  'Error updating stock and deleting order: $e');
+                                            }
                                           },
                                           child: Image.asset(
                                             'assets/icons/delete.png',

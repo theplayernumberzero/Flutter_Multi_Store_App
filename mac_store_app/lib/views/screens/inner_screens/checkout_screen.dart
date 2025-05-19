@@ -418,7 +418,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
                       int currentStock = productDoc.get('quantity');
 
-                      // tok kontrol
+                      // stok kontrol
                       if (item.quantity > currentStock) {
                         hasStockError = true;
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
