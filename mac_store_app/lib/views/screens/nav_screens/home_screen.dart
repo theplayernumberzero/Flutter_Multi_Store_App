@@ -19,10 +19,10 @@ class HomeScreen extends StatelessWidget {
             BannerWidget(),
             CategoryItem(),
             ReuseableTextWidget(
-                title: 'Top 5 Rated Products', subtitle: 'View all'),
+                title: 'Top 5 Rated Products', subtitle: 'View all products'),
             RecommendedProductWidget(),
             ReuseableTextWidget(
-                title: 'Popular Products', subtitle: 'View all'),
+                title: 'Popular Products', subtitle: 'View all products'),
             PopularProductsWidget(),
           ],
         ),

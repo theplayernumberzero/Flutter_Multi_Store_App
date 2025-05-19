@@ -42,8 +42,13 @@ class RecommendedProductWidget extends StatelessWidget {
           return bCurrentRating.compareTo(aCurrentRating);
         });
 
+        late var topProducts;
         // Sadece ilk 5 ürünü alıyoruz
-        final topProducts = products.take(5).toList();
+        if (products.toList().length >= 5) {
+          topProducts = products.take(5).toList();
+        } else {
+          products.toList();
+        }
 
         return SizedBox(
           height: 250,
