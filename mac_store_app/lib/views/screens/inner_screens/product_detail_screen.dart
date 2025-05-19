@@ -277,7 +277,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     fontWeight: FontWeight.bold),
               ),
             ),
-            widget.productData['rating'] == 0
+            widget.productData['totalReviews'] == 0
                 ? Text("")
                 : Padding(
                     padding: const EdgeInsets.only(left: 4.0),

@@ -4,6 +4,7 @@ import 'package:mac_store_app/controllers/auth_controller.dart';
 import 'package:mac_store_app/vendor/views/auth/vendor_login_screen.dart';
 import 'package:mac_store_app/vendor/views/auth/vendor_register_screen.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
+import 'package:mac_store_app/views/screens/authentication_screens/reset_password_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -207,6 +208,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ? Icons.visibility
                                 : Icons.visibility_off))),
                   ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ResetPasswordScreen()));
+                          },
+                          child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline),
+                          ))),
                   SizedBox(
                     height: 20,
                   ),

@@ -170,7 +170,7 @@ class ProducutItemWidget extends StatelessWidget {
                 left: 23,
                 top: 155,
                 child: Text(
-                  productData['rating'] == 0
+                  productData['totalReviews'] == 0
                       ? ""
                       : (productData['rating'] / productData['totalReviews'])
                           .toString(),

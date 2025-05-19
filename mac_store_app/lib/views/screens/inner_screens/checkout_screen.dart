@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _selectedPaymentMethod = 'stripe';
 
-  //User information
+  // Kullanıcı bilgileri
   String state = '';
   String city = '';
   String locality = '';
@@ -29,26 +31,43 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   @override
   void initState() {
-    getUserData();
     super.initState();
+    // Tek seferlik veri çekme işlemi yapalım
+    _fetchUserData();
   }
 
-  //get user datas
-  void getUserData() {
-    Stream<DocumentSnapshot> userDataStream =
-        _firestore.collection('buyers').doc(_auth.currentUser!.uid).snapshots();
+  Future<void> _fetchUserData() async {
+    try {
+      final userData = await _firestore
+          .collection('buyers')
+          .doc(_auth.currentUser!.uid)
+          .get();
 
-    //listen stream and update the data
-    userDataStream.listen((DocumentSnapshot userData) {
-      if (userData.exists) {
+      if (userData.exists && mounted) {
         setState(() {
-          state = userData.get('state');
-          city = userData.get('city');
-          locality = userData.get('locality');
-          pincode = userData.get('pincode');
+          state = userData.get('state') ?? '';
+          city = userData.get('city') ?? '';
+          locality = userData.get('locality') ?? '';
+          pincode = userData.get('pincode') ?? '';
         });
       }
-    });
+    } catch (e) {
+      print('Kullanıcı verisi yüklenirken hata: $e');
+    }
+  }
+
+  // ShippingAddressScreen'den dönüşte veriyi yenile
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchUserData();
+  }
+
+  @override
+  void dispose() {
+    // Gelecekte eklenebilecek controller'lar veya dispose edilmesi gereken
+    // kaynaklar için bu metodu tutuyoruz
+    super.dispose();
   }
 
   @override
@@ -343,15 +362,22 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           ),
         ),
       ),
-      bottomSheet: state == ""
+      bottomSheet: (state == "" ||
+              city == "" ||
+              locality == "" ||
+              pincode == "")
           ? Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    // async ekledik
+                    await Navigator.push(
+                        // await ekledik
                         context,
                         MaterialPageRoute(
                             builder: (context) => ShippingAddressScreen()));
+                    // ShippingAddressScreen'den döndükten sonra verileri yenile
+                    await _fetchUserData();
                   },
                   child: Text(
                     "Add address",

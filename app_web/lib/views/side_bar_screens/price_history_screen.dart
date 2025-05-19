@@ -66,10 +66,22 @@ class PriceHistoryScreen extends StatelessWidget {
                                 DataCell(Text(data['productName'] ?? '')),
                                 DataCell(Text(data['category'] ?? '')),
                                 DataCell(Text(data['storeName'] ?? '')),
+
                                 DataCell(
                                   IconButton(
                                     icon: Icon(Icons.history),
                                     onPressed: () {
+                                      // Fiyat geçmişini kopyalayıp sıralama yapıyorum burada
+                                      List<dynamic> sortedPriceHistory =
+                                          List.from(priceHistory);
+
+                                      //azalan sırada sıralama
+                                      sortedPriceHistory.sort((a, b) {
+                                        Timestamp timeA = a['time'];
+                                        Timestamp timeB = b['time'];
+                                        return timeB.compareTo(timeA);
+                                      });
+
                                       showDialog(
                                         context: context,
                                         builder:
@@ -90,9 +102,10 @@ class PriceHistoryScreen extends StatelessWidget {
                                                       ),
                                                     ),
                                                     SizedBox(height: 16),
-                                                    ...priceHistory.map((
+                                                    ...sortedPriceHistory.map((
                                                       price,
                                                     ) {
+                                                      // priceHistory yerine sortedPriceHistory kullanıyorum, çünkü sıralanmış yapı kullanacağım
                                                       Timestamp timestamp =
                                                           price['time'];
                                                       String formattedDate =
@@ -103,7 +116,7 @@ class PriceHistoryScreen extends StatelessWidget {
                                                           );
                                                       return ListTile(
                                                         title: Text(
-                                                          '₺${price['price']}',
+                                                          '\$${price['price']}',
                                                         ),
                                                         subtitle: Text(
                                                           formattedDate,
