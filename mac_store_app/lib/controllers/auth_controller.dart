@@ -75,8 +75,6 @@ class AuthController {
     return res;
   }
 
-  // Add this function to the AuthController class
-
   Future<String> resetPassword(String email) async {
     String res = 'something went wrong';
 

@@ -5,6 +5,7 @@ import 'package:mac_store_app/vendor/views/auth/vendor_register_screen.dart';
 import 'package:mac_store_app/vendor/views/screens/main_vendor_screen.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/login_screen.dart';
 import 'package:mac_store_app/views/screens/authentication_screens/register_screen.dart';
+import 'package:mac_store_app/views/screens/authentication_screens/reset_password_screen.dart';
 
 class VendorLoginScreen extends StatefulWidget {
   @override
@@ -39,7 +40,8 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       // Form geçerli ise işlemi yap
 
-      String res = await _authController.loginUser(email, password);
+      String res =
+          await _authController.loginUser(email.trim(), password.trim());
       if (res == 'vendor_success') {
         //go to main screen
         Future.delayed(Duration.zero, () {
@@ -204,6 +206,25 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                                 ? Icons.visibility
                                 : Icons.visibility_off))),
                   ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ResetPasswordScreen()));
+                          },
+                          child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline),
+                          ))),
                   SizedBox(
                     height: 20,
                   ),

@@ -71,4 +71,24 @@ class VendorAuthController {
 
     return res;
   }
+
+  Future<String> resetPassword(String email) async {
+    String res = 'something went wrong';
+
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      res = 'Success';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        res = 'No user found for that email.';
+      } else if (e.code == 'invalid-email') {
+        res = 'Please enter a valid email address.';
+      } else {
+        res = e.message ?? 'An error occurred while resetting password.';
+      }
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
 }
