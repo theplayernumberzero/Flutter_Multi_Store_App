@@ -473,6 +473,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         'city':
                             (userDoc.data() as Map<String, dynamic>)['city'],
                         'processing': true,
+                        'createdAt': FieldValue.serverTimestamp(),
                         'vendorId': item.vendorId,
                       });
 
