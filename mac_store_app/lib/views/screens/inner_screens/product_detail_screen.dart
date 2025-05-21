@@ -302,7 +302,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         ),
                         Text(widget.productData['rating'].toString()),
                         Text(
-                          "(${widget.productData['totalReviews']})",
+                          " (${widget.productData['totalReviews']})",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         )
                       ],

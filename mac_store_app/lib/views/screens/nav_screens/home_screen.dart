@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/banner_widget.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/category_item.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/header_widget.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/most_comment_popular_widget.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/popular_products_widget.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/recommended_product_widget.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/reusable_text_widget_popular.dart';
@@ -32,9 +33,13 @@ class HomeScreen extends StatelessWidget {
                 title: 'Top 5 Rated Products', subtitle: 'View all products'),
             RecommendedProductWidget(),
             ReusableTextWidgetPopular(
-                title: 'Popular Products',
-                subtitle: 'View all popular products'),
+              title: 'Popular Products',
+            ),
             PopularProductsWidget(),
+            ReusableTextWidgetPopular(
+              title: 'Most Comment',
+            ),
+            MostCommentPopularWidget(),
           ],
         ),
       ),

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mac_store_app/views/screens/inner_screens/all_popular_products_screen.dart';
 
 class ReusableTextWidgetPopular extends StatelessWidget {
   final String title;
-  final String subtitle;
 
-  const ReusableTextWidgetPopular(
-      {super.key, required this.title, required this.subtitle});
+  const ReusableTextWidgetPopular({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +21,6 @@ class ReusableTextWidgetPopular extends StatelessWidget {
               letterSpacing: 1,
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AllPopularProductsScreen()));
-            },
-            child: Text(
-              subtitle,
-              style: GoogleFonts.roboto(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12),
-            ),
-          )
         ],
       ),
     );
