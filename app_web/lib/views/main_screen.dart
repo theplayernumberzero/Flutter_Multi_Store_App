@@ -1,3 +1,4 @@
+import 'package:app_web/views/side_bar_screens/all_comments_screen.dart';
 import 'package:app_web/views/side_bar_screens/buyers_screen.dart';
 import 'package:app_web/views/side_bar_screens/category_screen.dart';
 import 'package:app_web/views/side_bar_screens/is_popular_screen.dart';
@@ -55,6 +56,11 @@ class _MainScreenState extends State<MainScreen> {
       case IsPopularScreen.id:
         setState(() {
           _selectedScreen = IsPopularScreen();
+        });
+        break;
+      case AllCommentsScreen.id:
+        setState(() {
+          _selectedScreen = AllCommentsScreen();
         });
         break;
       case StatisticsScreen.id:
@@ -146,6 +152,11 @@ class _MainScreenState extends State<MainScreen> {
             title: 'Popular Products',
             route: IsPopularScreen.id,
             icon: CupertinoIcons.star,
+          ),
+          AdminMenuItem(
+            title: 'Manage Comments',
+            route: AllCommentsScreen.id,
+            icon: Icons.comment,
           ),
           AdminMenuItem(
             title: 'Staticstics',

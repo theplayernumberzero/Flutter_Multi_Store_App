@@ -112,6 +112,7 @@ class OrderListWidget extends StatelessWidget {
                       : Text(
                         "Processing",
                         style: TextStyle(color: Colors.amber),
+                        textAlign: TextAlign.center,
                       ),
                   2,
                 ),
