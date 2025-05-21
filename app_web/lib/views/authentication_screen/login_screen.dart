@@ -1,4 +1,5 @@
 import 'package:app_web/controllers/admin_auth_controller.dart';
+import 'package:app_web/views/authentication_screen/forgot_password_screen.dart';
 import 'package:app_web/views/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -78,166 +79,191 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.95),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          //Scrollable
-          child: Form(
-            key: _formKey,
-            child: Center(
-              //horizontally centered
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Login your account",
-                    style: GoogleFonts.getFont(
-                      //Font proporty as first parameter
-                      'Lato',
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.2,
-                      fontSize: 23,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SingleChildScrollView(
+            //Scrollable
+            child: Form(
+              key: _formKey,
+              child: Center(
+                //horizontally centered
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Login your account",
+                      style: GoogleFonts.getFont(
+                        //Font proporty as first parameter
+                        'Lato',
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.2,
+                        fontSize: 23,
+                      ),
                     ),
-                  ),
 
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Email",
-                      style: GoogleFonts.getFont(
-                        'Nunito Sans',
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                  ),
-                  TextFormField(
-                    onChanged: (value) {
-                      email = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'E-posta boş olamaz';
-                      }
-                      if (!RegExp(
-                        r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$',
-                      ).hasMatch(value)) {
-                        return 'Geçersiz e-posta adresi';
-                      }
-                      return null; // Geçerli
-                    },
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      labelText: "Enter your email",
-                      labelStyle: GoogleFonts.getFont(
-                        'Nunito Sans',
-                        fontSize: 14,
-                        letterSpacing: 0.1,
-                      ),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Image.asset(
-                          "assets/icons/email.png",
-                          width: 20,
-                          height: 20,
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Email",
+                        style: GoogleFonts.getFont(
+                          'Nunito Sans',
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Password",
-                      style: GoogleFonts.getFont(
-                        'Nunito Sans',
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                  ),
-                  TextFormField(
-                    onChanged: (value) {
-                      password = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password cannot be empty';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null; // Valid
-                    },
-                    obscureText: _isObscure,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      labelText: "Enter your password",
-                      labelStyle: GoogleFonts.getFont(
-                        'Nunito Sans',
-                        fontSize: 14,
-                        letterSpacing: 0.1,
-                      ),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Image.asset(
-                          "assets/icons/password.png",
-                          width: 20,
-                          height: 20,
+                    TextFormField(
+                      onChanged: (value) {
+                        email = value;
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'E-posta boş olamaz';
+                        }
+                        if (!RegExp(
+                          r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$',
+                        ).hasMatch(value)) {
+                          return 'Geçersiz e-posta adresi';
+                        }
+                        return null; // Geçerli
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
                         ),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isObscure = !_isObscure;
-                          });
-                        },
-                        icon: Icon(
-                          _isObscure ? Icons.visibility : Icons.visibility_off,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        labelText: "Enter your email",
+                        labelStyle: GoogleFonts.getFont(
+                          'Nunito Sans',
+                          fontSize: 14,
+                          letterSpacing: 0.1,
+                        ),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Image.asset(
+                            "assets/icons/email.png",
+                            width: 20,
+                            height: 20,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () => _submitForm(context),
-                    child: Container(
-                      width: 319,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.purple,
+                    SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Password",
+                        style: GoogleFonts.getFont(
+                          'Nunito Sans',
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.2,
+                        ),
                       ),
-                      child: Center(
-                        child:
-                            _isLoading
-                                ? CircularProgressIndicator(color: Colors.white)
-                                : Text(
-                                  "Sign In",
-                                  style: GoogleFonts.getFont(
-                                    'Lato',
-                                    fontSize: 18,
-                                    //fontWeight: FontWeight.bold,
+                    ),
+                    TextFormField(
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null; // Valid
+                      },
+                      obscureText: _isObscure,
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        labelText: "Enter your password",
+                        labelStyle: GoogleFonts.getFont(
+                          'Nunito Sans',
+                          fontSize: 14,
+                          letterSpacing: 0.1,
+                        ),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Image.asset(
+                            "assets/icons/password.png",
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _isObscure = !_isObscure;
+                            });
+                          },
+                          icon: Icon(
+                            _isObscure
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Forgot password ?",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    GestureDetector(
+                      onTap: () => _submitForm(context),
+                      child: Container(
+                        width: 319,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.purple,
+                        ),
+                        child: Center(
+                          child:
+                              _isLoading
+                                  ? CircularProgressIndicator(
                                     color: Colors.white,
+                                  )
+                                  : Text(
+                                    "Sign In",
+                                    style: GoogleFonts.getFont(
+                                      'Lato',
+                                      fontSize: 18,
+                                      //fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
