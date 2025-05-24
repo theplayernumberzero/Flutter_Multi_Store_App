@@ -13,6 +13,7 @@
 migrate_working_dir/
 firebase.json
 lib/firebase.options.dart
+lib/consts_api.dart
 
 # IntelliJ related
 *.iml

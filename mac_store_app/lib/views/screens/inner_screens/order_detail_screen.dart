@@ -44,7 +44,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     final productDoc = await productRef.get();
     if (productDoc.exists) {
-      int currentRating = productDoc.data()?['rating'] ?? 0;
+      double currentRating = productDoc.data()?['rating'] ?? 0;
 
       await productRef.update({
         'rating': currentRating + newRating,

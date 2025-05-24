@@ -300,7 +300,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           Icons.star,
                           color: Colors.amber,
                         ),
-                        Text(widget.productData['rating'].toString()),
+                        Text((widget.productData['rating'] /
+                                widget.productData['totalReviews'])
+                            .toString()),
                         Text(
                           " (${widget.productData['totalReviews']})",
                           style: TextStyle(fontWeight: FontWeight.bold),

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/stripe_controller.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/views/screens/inner_screens/shipping_address_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
@@ -390,6 +391,138 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 onTap: () async {
                   if (_selectedPaymentMethod == 'stripe') {
                     // Stripe işlemleri burada olacak
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    // Önce stok kontrolü yap
+                    bool hasStockError = false;
+
+                    for (var item in ref
+                        .read(cartProvider.notifier)
+                        .getCartItem
+                        .values
+                        .toList()) {
+                      DocumentSnapshot productDoc = await _firestore
+                          .collection('products')
+                          .doc(item.productId)
+                          .get();
+
+                      if (!productDoc.exists) {
+                        hasStockError = true;
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('${item.productName} bulunamadı.'),
+                        ));
+                        break;
+                      }
+
+                      int currentStock = productDoc.get('quantity');
+
+                      if (item.quantity > currentStock) {
+                        hasStockError = true;
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                              '${item.productName} için yeterli stok yok. Mevcut: $currentStock'),
+                        ));
+                        break;
+                      }
+                    }
+
+                    if (hasStockError) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      return;
+                    }
+
+                    // Toplam tutarı hesapla
+                    double totalAmount = 0;
+                    for (var item in ref
+                        .read(cartProvider.notifier)
+                        .getCartItem
+                        .values
+                        .toList()) {
+                      totalAmount += (item.productPrice -
+                              item.productPrice * item.discount / 100) *
+                          item.quantity;
+                    }
+
+                    try {
+                      // Stripe ödeme işlemini başlat
+                      await StripeController.instance.makePayment(totalAmount);
+
+                      // Ödeme başarılı ise sipariş oluştur
+                      for (var item in ref
+                          .read(cartProvider.notifier)
+                          .getCartItem
+                          .values
+                          .toList()) {
+                        DocumentSnapshot userDoc = await _firestore
+                            .collection("buyers")
+                            .doc(_auth.currentUser!.uid)
+                            .get();
+
+                        final orderId = Uuid().v4();
+
+                        await _firestore.collection('orders').doc(orderId).set({
+                          'orderId': orderId,
+                          'productName': item.productName,
+                          'productId': item.productId,
+                          'size': item.productSize,
+                          'quantity': item.quantity,
+                          'price': (item.productPrice -
+                              item.productPrice * item.discount / 100),
+                          'category': item.categoryName,
+                          'productImage': item.imageUrl[0],
+                          'state':
+                              (userDoc.data() as Map<String, dynamic>)['state'],
+                          'email':
+                              (userDoc.data() as Map<String, dynamic>)['email'],
+                          'locality': (userDoc.data()
+                              as Map<String, dynamic>)['locality'],
+                          'fullName': (userDoc.data()
+                              as Map<String, dynamic>)['fullname'],
+                          'buyerId': _auth.currentUser!.uid,
+                          'deliveredCount': 0,
+                          'delivered': false,
+                          'city':
+                              (userDoc.data() as Map<String, dynamic>)['city'],
+                          'processing': true,
+                          'createdAt': FieldValue.serverTimestamp(),
+                          'vendorId': item.vendorId,
+                        });
+
+                        // Ürün stok güncelleme
+                        await _firestore
+                            .collection('products')
+                            .doc(item.productId)
+                            .update({
+                          'quantity': FieldValue.increment(-item.quantity),
+                        });
+                      }
+
+                      cartProviderData.clear();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text('Ödeme başarılı, siparişiniz alındı')),
+                      );
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MainScreen()));
+                    } catch (e) {
+                      // Ödeme başarısız olduğunda
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                'Ödeme işlemi başarısız: ${e.toString()}')),
+                      );
+                    } finally {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
                   } else {
                     setState(() {
                       isLoading = true;
