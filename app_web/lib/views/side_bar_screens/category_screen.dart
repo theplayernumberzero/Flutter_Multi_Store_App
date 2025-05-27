@@ -76,85 +76,87 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      //We can access current state of our form
-      key: _formKey,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Categories",
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Divider(color: Colors.grey),
-          Row(
-            children: [
-              Column(
-                children: [
-                  Container(
-                    width: 150,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade500,
-                      border: Border.all(color: Colors.grey.shade800),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child:
-                          _image != null
-                              ? Image.memory(_image)
-                              : Text(
-                                'Upload Image',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        pickImage();
-                      },
-                      child: Text(
-                        'Upload Image',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(width: 30),
-              SizedBox(
-                width: 150,
-                child: TextFormField(
-                  onChanged: (value) {
-                    categoryName = value;
-                  },
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'please enter category name';
-                    } else {
-                      return null; //valid
-                    }
-                  },
-                  decoration: InputDecoration(labelText: 'Category Name'),
+    return SingleChildScrollView(
+      child: Form(
+        //We can access current state of our form
+        key: _formKey,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Categories",
+                  style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  uploadToFirestore();
-                },
-                child: Text('Save'),
-              ),
-            ],
-          ),
-          CategoryListWidget(),
-        ],
+            ),
+            Divider(color: Colors.grey),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade500,
+                        border: Border.all(color: Colors.grey.shade800),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child:
+                            _image != null
+                                ? Image.memory(_image)
+                                : Text(
+                                  'Upload Image',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          pickImage();
+                        },
+                        child: Text(
+                          'Upload Image',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 30),
+                SizedBox(
+                  width: 150,
+                  child: TextFormField(
+                    onChanged: (value) {
+                      categoryName = value;
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'please enter category name';
+                      } else {
+                        return null; //valid
+                      }
+                    },
+                    decoration: InputDecoration(labelText: 'Category Name'),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    uploadToFirestore();
+                  },
+                  child: Text('Save'),
+                ),
+              ],
+            ),
+            CategoryListWidget(),
+          ],
+        ),
       ),
     );
   }
