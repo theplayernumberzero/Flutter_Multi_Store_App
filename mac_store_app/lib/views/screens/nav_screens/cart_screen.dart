@@ -355,6 +355,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   height: 71,
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
                     color: totalAmount == 0.0
                         ? Colors.grey
                         : Colors.deepPurpleAccent,
@@ -364,7 +365,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Checkout",
+                          "   Checkout",
                           style: GoogleFonts.roboto(
                             color: Colors.white,
                             fontSize: 16,

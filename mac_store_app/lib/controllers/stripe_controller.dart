@@ -57,7 +57,6 @@ class StripeController {
   Future<void> _processPayment() async {
     try {
       await Stripe.instance.presentPaymentSheet();
-      await Stripe.instance.confirmPaymentSheetPayment();
     } catch (e) {
       print("Ödeme işlemi hatası: $e");
       throw e;
