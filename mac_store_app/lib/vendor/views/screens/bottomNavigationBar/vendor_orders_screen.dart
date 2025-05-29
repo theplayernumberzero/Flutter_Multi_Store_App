@@ -318,11 +318,13 @@ class _VendorOrdersScreenState extends State<VendorOrdersScreen> {
                                                       SizedBox(
                                                         width: 24,
                                                       ),
-                                                      Text(
-                                                        "Total: ${orderData['price'] * orderData['quantity']}\$",
-                                                        style: TextStyle(
-                                                          color: Colors.blue,
-                                                          fontSize: 16,
+                                                      Expanded(
+                                                        child: Text(
+                                                          "Total: ${orderData['price'] * orderData['quantity']}\$",
+                                                          style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 16,
+                                                          ),
                                                         ),
                                                       ),
                                                     ],

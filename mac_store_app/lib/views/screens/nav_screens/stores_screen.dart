@@ -67,9 +67,9 @@ class StoresScreen extends StatelessWidget {
                                 vendorId: vendor['uid'])));
                   },
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8.0, left: 128),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         CircleAvatar(
                           child: Text(vendor['fullname'][0].toUpperCase()),
